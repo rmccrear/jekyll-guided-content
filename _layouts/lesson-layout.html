@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title | default: site.title }}</title>
   <!-- Bulma CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
   <!-- Tocbot CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot/dist/tocbot.css">
   <!-- Custom CSS (loads after Bulma for overrides) -->
@@ -15,7 +15,7 @@
 </head>
 <body>
   <!-- Mobile: Hamburger navbar -->
-  <nav class="navbar is-hidden-desktop is-fixed-top" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-hidden-desktop" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="{{ '/' | relative_url }}">
         {{ page.title | default: site.title | default: 'Documentation' }}
@@ -29,6 +29,9 @@
     <div id="toc-menu" class="navbar-menu">
       <div class="navbar-start">
         <div class="navbar-item">
+          <a href="{{ '/' | relative_url }}" class="button is-light is-small is-fullwidth" style="margin-bottom: 1rem;">
+            ← {% assign index_page = site.pages | where: "path", "index.md" | first %}{{ index_page.title | default: site.title | default: 'Course' }}
+          </a>
           <aside class="menu" id="mobile-toc">
             <p class="menu-label">Table of Contents</p>
             <ul class="menu-list" id="mobile-toc-list">
@@ -42,7 +45,7 @@
 
   <div class="columns is-gapless" style="margin-top: 0;">
     <!-- Desktop: Sidebar column -->
-    <aside class="column is-narrow is-hidden-mobile" id="desktop-sidebar">
+    <aside class="column is-narrow is-hidden-touch" id="desktop-sidebar">
       <div class="section" style="padding: 1.5rem;">
         <a href="{{ '/' | relative_url }}" class="button is-light is-small is-fullwidth" style="margin-bottom: 1rem;">
           ← {% assign index_page = site.pages | where: "path", "index.md" | first %}{{ index_page.title | default: site.title | default: 'Course' }}

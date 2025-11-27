@@ -1,0 +1,584 @@
+// ========================================
+//   Variables
+//   ========================================
+// Bulma v1 CSS Variables Mapping
+// We no longer define Sass variables for colors; we use Bulma's CSS variables.
+// This allows for dynamic theming and dark mode support.
+
+// Custom typography sizes (not in standard Bulma scale)
+$font-size-lesson-title: 2.5rem;
+$font-size-lesson-description: 1.125rem;
+$font-size-h2-custom: 1.75rem;
+$font-size-h4-custom: 1.25rem;
+$font-size-h5-custom: 1.125rem;
+$font-size-menu-label: 0.75rem;
+
+$radius: 0.5rem;
+$radius-small: 0.25rem;
+$speed: 0.2s;
+
+
+// ========================================
+//   Layout
+//   ========================================
+/* Layout Structure - Sidebar and Main Content */
+.columns.is-gapless {
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Desktop Sidebar Styling */
+#desktop-sidebar {
+  width: 250px;
+  background-color: var(--bulma-scheme-main-bis);
+  border-right: 1px solid var(--bulma-border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 0;
+}
+
+#desktop-sidebar .section {
+  padding: 1.5rem 1rem;
+}
+
+/* Main Content Area */
+main.column {
+  min-height: 100vh;
+  background-color: var(--bulma-body-background-color);
+  padding-top: 0;
+}
+
+/* Adjust main content when sidebar is visible */
+.columns.is-gapless main.column {
+  margin-left: 0;
+}
+
+/* Mobile Navbar Styling */
+.navbar.is-hidden-desktop {
+  background-color: var(--bulma-body-background-color);
+  box-shadow: 0 2px 0 0 var(--bulma-scheme-main-ter);
+  border-bottom: 1px solid var(--bulma-border);
+  z-index: 30; /* Above content but below modals */
+}
+
+.navbar-menu {
+  background-color: var(--bulma-body-background-color);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 52px);
+  overflow-y: auto;
+}
+
+/* Add top margin to content on mobile to account for fixed navbar */
+@media screen and (max-width: 1023px) {
+  .columns.is-gapless {
+    margin-top: 52px; /* Height of navbar */
+  }
+}
+
+/* Ensure main content flows vertically (rows) not horizontally (columns) */
+main .container {
+  display: block !important;
+  column-count: 1 !important;
+  column-width: auto !important;
+}
+
+/* Lesson Header - Main page title at top of content */
+main .container > h1:first-child,
+main .section > h1:first-child,
+main .container h1:first-of-type {
+  font-size: $font-size-lesson-title;
+  font-weight: var(--bulma-weight-bold);
+  color: var(--bulma-title-color);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--bulma-border);
+  line-height: 1.2;
+}
+
+/* Lesson description paragraph immediately after title */
+main .container > h1:first-child + p,
+main .section > h1:first-child + p,
+main .container h1:first-of-type + p {
+  font-size: $font-size-lesson-description;
+  color: var(--bulma-text);
+  margin-top: 0;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+
+// ========================================
+//   Utility Bar
+//   ========================================
+/* Utility Bar - Sticky bar with action buttons */
+.utility-bar {
+  height: 2em;
+  position: sticky;
+  top: 0;
+  background-color: var(--bulma-body-background-color);
+  border-bottom: 1px solid var(--bulma-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 20; // Above content but below mobile navbar (z-index: 30)
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.utility-bar-toc {
+  display: flex !important;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.utility-bar-toc-button {
+  width: 2em !important;
+  height: 2em !important;
+  min-width: 2em !important;
+  min-height: 2em !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bulma-scheme-main-ter);
+  background-color: var(--bulma-body-background-color);
+  color: var(--bulma-text);
+  text-decoration: none;
+  border-radius: 0; // Square buttons
+  font-weight: var(--bulma-weight-semibold);
+  font-size: 0.875rem;
+  transition: background-color $speed ease, border-color $speed ease, color $speed ease;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  
+  &:hover {
+    background-color: var(--bulma-scheme-main-bis);
+    border-color: var(--bulma-link);
+    color: var(--bulma-link);
+  }
+  
+  &.active {
+    background-color: var(--bulma-link);
+    color: var(--bulma-link-invert);
+    border-color: var(--bulma-link);
+  }
+}
+
+.utility-bar-content {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+}
+
+// Mobile: Account for fixed navbar offset
+@media screen and (max-width: 1023px) {
+  .utility-bar {
+    top: 52px; // Height of mobile navbar
+  }
+}
+
+
+// ========================================
+//   Steps
+//   ========================================
+/* Step Container - Uses Bulma's .box component */
+.step.box {
+  margin: 2rem 0;
+  border: 2px solid var(--bulma-border);
+  background-color: var(--bulma-scheme-main-bis);
+  display: block !important;
+  width: 100% !important;
+  column-count: 1 !important;
+  column-width: auto !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  transition: opacity $speed ease, display $speed ease;
+}
+
+/* Focus mode: hide steps that are not focused */
+.focus-mode .step.box {
+  display: none !important;
+}
+
+.focus-mode .step.box.focused {
+  display: block !important;
+}
+
+.step.box:first-child {
+  margin-top: 0;
+}
+
+.step.box:last-child {
+  margin-bottom: 0;
+}
+
+/* Ensure .content wrapper doesn't create columns */
+.step.box .content {
+  display: block !important;
+  column-count: 1 !important;
+  column-width: auto !important;
+  width: 100% !important;
+}
+
+/* Step Header - Uses Bulma's .level class for horizontal layout */
+.step-header.level {
+  font-size: 0.875rem;
+  font-weight: var(--bulma-weight-semibold);
+  color: var(--bulma-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--bulma-border);
+  display: block !important;
+  width: 100% !important;
+  position: relative;
+}
+
+/* Link icon for step headers with IDs - appears on hover */
+.step-header.level[id] {
+  cursor: pointer;
+  transition: color $speed ease;
+}
+
+.step-header.level[id]:hover {
+  color: var(--bulma-link);
+}
+
+.step-header.level[id]::after {
+  content: '🔗';
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  opacity: 0;
+  transition: opacity $speed ease;
+  vertical-align: middle;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.step-header.level[id]:hover::after {
+  opacity: 0.7;
+}
+
+.step-header.level[id]:active::after {
+  opacity: 1;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.step-header.level[id] {
+  scroll-margin-top: 1rem;
+  padding-top: 2em; // Account for sticky utility bar (2em height)
+}
+
+/* Ensure block-level elements flow vertically (not side-by-side) */
+.step.box .content > p,
+.step.box .content > ul,
+.step.box .content > ol,
+.step.box .content > h1,
+.step.box .content > h2,
+.step.box .content > h3,
+.step.box .content > h4,
+.step.box .content > h5,
+.step.box .content > h6,
+.step.box .content > pre,
+.step.box .content > details,
+.step.box .content > div {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  clear: both !important;
+}
+
+
+// ========================================
+//   Typography
+//   ========================================
+/* Typography inside steps - Uses Bulma's .content class pattern */
+/* Note: Bulma's .content class provides default typography. We only override what's necessary. */
+.step.box .content h1,
+.step.box .content h2,
+.step.box .content h3,
+.step.box .content h4,
+.step.box .content h5,
+.step.box .content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  line-height: 1.4;
+}
+
+/* Typography scale following Bulma's size scale */
+.step.box .content h1 {
+  font-size: 2rem;
+  font-weight: var(--bulma-weight-bold);
+}
+
+.step.box .content h2 {
+  font-size: $font-size-h2-custom;
+  font-weight: var(--bulma-weight-semibold);
+}
+
+.step.box .content h3 {
+  font-size: 1.5rem;
+  font-weight: var(--bulma-weight-semibold);
+}
+
+.step.box .content h4 {
+  font-size: $font-size-h4-custom;
+  font-weight: var(--bulma-weight-semibold);
+}
+
+.step.box .content h5 {
+  font-size: $font-size-h5-custom;
+  font-weight: var(--bulma-weight-semibold);
+}
+
+.step.box .content h6 {
+  font-size: 1rem;
+  font-weight: var(--bulma-weight-semibold);
+}
+
+/* First heading in a step should have less top margin */
+.step.box .content > h1:first-child,
+.step.box .content > h2:first-child,
+.step.box .content > h3:first-child,
+.step.box .content > h4:first-child,
+.step.box .content > h5:first-child,
+.step.box .content > h6:first-child {
+  margin-top: 0;
+}
+
+/* Code blocks - Follows Bulma's code styling pattern */
+.step.box .content pre {
+  margin: 1rem 0;
+  display: block !important;
+  width: 100% !important;
+}
+
+.step.box .content code {
+  font-size: 0.875em; // Relative to parent font size
+}
+
+/* Paragraphs - Bulma's .content class provides defaults, but we ensure consistency */
+.step.box .content p {
+  margin: 1em 0;
+  line-height: 1.6;
+}
+
+
+// ========================================
+//   Lists
+//   ========================================
+/* Lists - Bulma's .content class provides default list styling */
+/* We only override what's necessary for our specific use cases */
+
+/* Regular lists in steps - Minimal override, Bulma handles most styling */
+.step.box .content ul,
+.step.box .content ol {
+  margin: 1em 0;
+  padding-left: 2em; // Relative to font size
+  line-height: 1.6;
+}
+
+.step.box .content ul {
+  list-style-type: disc;
+}
+
+.step.box .content ol {
+  list-style-type: decimal;
+}
+
+.step.box .content li {
+  margin: 0.5em 0; // Relative to font size
+  padding-left: 0.5rem;
+}
+
+/* Nested lists */
+.step.box .content ul ul,
+.step.box .content ol ol,
+.step.box .content ul ol,
+.step.box .content ol ul {
+  margin: 0.5em 0; // Relative to font size
+  padding-left: 2rem;
+}
+
+
+// ========================================
+//   Details / ShowMe
+//   ========================================
+/* Details/Summary - Follows Bulma's card component pattern */
+details {
+  margin: 1.5rem 0;
+  border: 1px solid var(--bulma-border);
+  border-radius: $radius;
+  background-color: var(--bulma-body-background-color);
+  overflow: hidden;
+}
+
+details summary {
+  padding: 1rem 1.5rem;
+  font-weight: var(--bulma-weight-semibold);
+  cursor: pointer;
+  background-color: var(--bulma-scheme-main-ter);
+  user-select: none;
+  transition: background-color $speed ease;
+}
+
+details summary:hover {
+  background-color: var(--bulma-scheme-main-bis);
+}
+
+details[open] summary {
+  border-bottom: 1px solid var(--bulma-border);
+}
+
+details > *:not(summary):not(ul):not(ol) {
+  padding: 1rem 1.5rem;
+}
+
+/* Nested details inside steps */
+.step.box details {
+  margin: 1rem 0;
+}
+
+/* Lists inside details/showme tags - Custom styling needed for list-style-position */
+details.showme ul,
+details.showme ol {
+  margin: 1em 0;
+  padding: 1rem 1.5rem; // Match details content padding
+  padding-left: 1.25em; // Reduced left padding to bring numbers closer
+  line-height: 1.6;
+  list-style-position: inside; // Bring numbers inside for better alignment
+}
+
+details.showme ul {
+  list-style-type: disc;
+}
+
+details.showme ol {
+  list-style-type: decimal;
+}
+
+details.showme li {
+  margin: 0.5em 0;
+  padding-left: 0; // Remove extra padding on list items
+  line-height: 1.6;
+}
+
+/* Nested lists inside showme details */
+details.showme ul ul,
+details.showme ol ol,
+details.showme ul ol,
+details.showme ol ul {
+  margin: 0.5em 0;
+  padding-left: 2rem;
+}
+
+/* Ensure lists have proper spacing from other content in details */
+details > p + ul,
+details > p + ol,
+details > ul + p,
+details > ol + p {
+  margin-top: 1em;
+}
+
+
+// ========================================
+//   Table of Contents
+//   ========================================
+/* ========================================
+   Table of Contents Styling
+   ======================================== */
+
+/* TOC Menu Styling - Follows Bulma's menu component pattern */
+.menu {
+  font-size: 0.875rem;
+}
+
+.menu-label {
+  font-size: $font-size-menu-label;
+  font-weight: var(--bulma-weight-semibold);
+  color: var(--bulma-text);
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--bulma-border);
+}
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-list li {
+  margin: 0.25rem 0;
+}
+
+.menu-list a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: var(--bulma-text);
+  text-decoration: none;
+  border-radius: $radius-small;
+  transition: background-color $speed ease, color $speed ease;
+}
+
+.menu-list a:hover {
+  background-color: var(--bulma-scheme-main-ter);
+  color: var(--bulma-link);
+}
+
+.menu-list a:active {
+  background-color: var(--bulma-scheme-main-ter);
+}
+
+/* Active TOC link (when scrolled to that section) */
+.menu-list a.is-active {
+  background-color: var(--bulma-link);
+  color: var(--bulma-link-invert);
+  font-weight: var(--bulma-weight-semibold);
+}
+
+/* Mobile TOC specific styling */
+#mobile-toc {
+  padding: 1rem 0;
+}
+
+#mobile-toc .menu-label {
+  margin-top: 0;
+}
+
+
+// ========================================
+//   Scrollbar
+//   ========================================
+/* Desktop sidebar scrollbar styling */
+#desktop-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#desktop-sidebar::-webkit-scrollbar-track {
+  background: var(--bulma-scheme-main-bis);
+}
+
+#desktop-sidebar::-webkit-scrollbar-thumb {
+  background: var(--bulma-border);
+  border-radius: 3px;
+}
+
+#desktop-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--bulma-text-light);
+}
