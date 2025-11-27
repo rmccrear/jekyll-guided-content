@@ -1,0 +1,71 @@
+/* Typography inside steps - Uses Bulma's .content class pattern */
+/* Note: Bulma's .content class provides default typography. We only override what's necessary. */
+.step.box .content h1,
+.step.box .content h2,
+.step.box .content h3,
+.step.box .content h4,
+.step.box .content h5,
+.step.box .content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+  line-height: 1.4;
+}
+
+/* Typography scale following Bulma's size scale */
+.step.box .content h1 {
+  font-size: $size-6;
+  font-weight: $weight-bold;
+}
+
+.step.box .content h2 {
+  font-size: $font-size-h2-custom;
+  font-weight: $weight-semibold;
+}
+
+.step.box .content h3 {
+  font-size: $size-5;
+  font-weight: $weight-semibold;
+}
+
+.step.box .content h4 {
+  font-size: $font-size-h4-custom;
+  font-weight: $weight-semibold;
+}
+
+.step.box .content h5 {
+  font-size: $font-size-h5-custom;
+  font-weight: $weight-semibold;
+}
+
+.step.box .content h6 {
+  font-size: $size-4;
+  font-weight: $weight-semibold;
+}
+
+/* First heading in a step should have less top margin */
+.step.box .content > h1:first-child,
+.step.box .content > h2:first-child,
+.step.box .content > h3:first-child,
+.step.box .content > h4:first-child,
+.step.box .content > h5:first-child,
+.step.box .content > h6:first-child {
+  margin-top: 0;
+}
+
+/* Code blocks - Follows Bulma's code styling pattern */
+.step.box .content pre {
+  margin: $size-4 0;
+  display: block !important;
+  width: 100% !important;
+}
+
+.step.box .content code {
+  font-size: 0.875em; // Relative to parent font size
+}
+
+/* Paragraphs - Bulma's .content class provides defaults, but we ensure consistency */
+.step.box .content p {
+  margin: 1em 0;
+  line-height: 1.6;
+}
+

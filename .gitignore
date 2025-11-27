@@ -1,0 +1,53 @@
+# Jekyll build artifacts
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata/
+.jekyll-cache/
+
+# Gem files
+*.gem
+*.gem.lock
+
+# Bundler
+.bundle/
+vendor/bundle/
+Gemfile.lock
+
+# Ruby
+*.rbc
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+*.code-workspace
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test sites and iterations (if any)
+test-*/
+_site/
+

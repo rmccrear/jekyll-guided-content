@@ -1,0 +1,88 @@
+/* Layout Structure - Sidebar and Main Content */
+.columns.is-gapless {
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Desktop Sidebar Styling */
+#desktop-sidebar {
+  width: 250px;
+  background-color: $grey-lightest;
+  border-right: 1px solid $grey-lighter-variant;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 0;
+}
+
+#desktop-sidebar .section {
+  padding: $size-5 $size-4;
+}
+
+/* Main Content Area */
+main.column {
+  min-height: 100vh;
+  background-color: $white;
+  padding-top: 0;
+}
+
+/* Adjust main content when sidebar is visible */
+.columns.is-gapless main.column {
+  margin-left: 0;
+}
+
+/* Mobile Navbar Styling */
+.navbar.is-hidden-desktop {
+  background-color: $white;
+  box-shadow: 0 2px 0 0 $grey-lightest-variant;
+  border-bottom: 1px solid $grey-lighter-variant;
+  z-index: 30; /* Above content but below modals */
+}
+
+.navbar-menu {
+  background-color: $white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 52px);
+  overflow-y: auto;
+}
+
+/* Add top margin to content on mobile to account for fixed navbar */
+@media screen and (max-width: 1023px) {
+  .columns.is-gapless {
+    margin-top: 52px; /* Height of navbar */
+  }
+}
+
+/* Ensure main content flows vertically (rows) not horizontally (columns) */
+main .container {
+  display: block !important;
+  column-count: 1 !important;
+  column-width: auto !important;
+}
+
+/* Lesson Header - Main page title at top of content */
+main .container > h1:first-child,
+main .section > h1:first-child,
+main .container h1:first-of-type {
+  font-size: $font-size-lesson-title;
+  font-weight: $weight-bold;
+  color: $grey-darker;
+  margin-top: 0;
+  margin-bottom: $size-5;
+  padding-bottom: $size-4;
+  border-bottom: 2px solid $grey-lighter-variant;
+  line-height: 1.2;
+}
+
+/* Lesson description paragraph immediately after title */
+main .container > h1:first-child + p,
+main .section > h1:first-child + p,
+main .container h1:first-of-type + p {
+  font-size: $font-size-lesson-description;
+  color: $grey-dark;
+  margin-top: 0;
+  margin-bottom: $size-6;
+  line-height: 1.6;
+}
+

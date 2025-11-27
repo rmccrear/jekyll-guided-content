@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title | default: site.title }}</title>
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <!-- Tocbot CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot/dist/tocbot.css">
+  <!-- Custom CSS (loads after Bulma for overrides) -->
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+  <!-- Highlight.js for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+</head>
+<body>
+  <!-- Mobile: Hamburger navbar -->
+  <nav class="navbar is-hidden-desktop is-fixed-top" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="{{ '/' | relative_url }}">
+        {{ page.title | default: site.title | default: 'Documentation' }}
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="toc-menu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="toc-menu" class="navbar-menu">
+      <div class="navbar-start">
+        <div class="navbar-item">
+          <aside class="menu" id="mobile-toc">
+            <p class="menu-label">Table of Contents</p>
+            <ul class="menu-list" id="mobile-toc-list">
+              <!-- TOC will be generated here by JavaScript -->
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="columns is-gapless" style="margin-top: 0;">
+    <!-- Desktop: Sidebar column -->
+    <aside class="column is-narrow is-hidden-mobile" id="desktop-sidebar">
+      <div class="section" style="padding: 1.5rem;">
+        <a href="{{ '/' | relative_url }}" class="button is-light is-small is-fullwidth" style="margin-bottom: 1rem;">
+          ← {% assign index_page = site.pages | where: "path", "index.md" | first %}{{ index_page.title | default: site.title | default: 'Course' }}
+        </a>
+        <aside class="menu">
+          <p class="menu-label">Table of Contents</p>
+          <ul class="menu-list" id="desktop-toc-list">
+            <!-- TOC will be generated here by JavaScript -->
+          </ul>
+        </aside>
+      </div>
+    </aside>
+    
+    <!-- Main content column -->
+    <main class="column">
+      <section class="section">
+        <div class="container">
+          {{ content }}
+        </div>
+      </section>
+    </main>
+  </div>
+  <!-- Highlight.js initialization -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  
+  <!-- Tocbot JS -->
+  <script src="https://cdn.jsdelivr.net/npm/tocbot/dist/tocbot.min.js"></script>
+  
+  <!-- Generate Table of Contents with Tocbot -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if there are any step headers with IDs
+      const stepHeaders = document.querySelectorAll('.step-header.level[id]');
+      
+      if (stepHeaders.length === 0) {
+        // Hide TOC if no step headers found
+        const desktopSidebar = document.getElementById('desktop-sidebar');
+        const mobileToc = document.getElementById('mobile-toc');
+        if (desktopSidebar) desktopSidebar.style.display = 'none';
+        if (mobileToc) {
+          const navbarItem = mobileToc.closest('.navbar-item');
+          if (navbarItem) navbarItem.style.display = 'none';
+        }
+        return;
+      }
+      
+      // Initialize Tocbot for desktop TOC
+      const desktopTocList = document.getElementById('desktop-toc-list');
+      if (desktopTocList) {
+        tocbot.init({
+          tocSelector: '#desktop-toc-list',
+          contentSelector: 'main.column',
+          headingSelector: '.step-header.level[id]',
+          orderedList: false,
+          smoothScroll: true,
+          scrollSmoothOffset: 0
+        });
+      }
+      
+      // Initialize Tocbot for mobile TOC
+      const mobileTocList = document.getElementById('mobile-toc-list');
+      if (mobileTocList) {
+        tocbot.init({
+          tocSelector: '#mobile-toc-list',
+          contentSelector: 'main.column',
+          headingSelector: '.step-header.level[id]',
+          orderedList: false,
+          smoothScroll: true,
+          scrollSmoothOffset: 0
+        });
+      }
+      
+      // Add click handlers to TOC links to close mobile menu
+      // Use event delegation since Tocbot generates links dynamically
+      const desktopToc = document.getElementById('desktop-toc-list');
+      const mobileToc = document.getElementById('mobile-toc-list');
+      
+      function closeMobileMenu() {
+        const burger = document.querySelector('.navbar-burger');
+        const menu = document.getElementById('toc-menu');
+        if (burger && menu && burger.classList.contains('is-active')) {
+          burger.classList.remove('is-active');
+          menu.classList.remove('is-active');
+        }
+      }
+      
+      if (desktopToc) {
+        desktopToc.addEventListener('click', function(e) {
+          if (e.target.tagName === 'A') {
+            closeMobileMenu();
+          }
+        });
+      }
+      
+      if (mobileToc) {
+        mobileToc.addEventListener('click', function(e) {
+          if (e.target.tagName === 'A') {
+            closeMobileMenu();
+          }
+        });
+      }
+    });
+  </script>
+  
+  <!-- Focus mode and utility bar TOC functionality -->
+  <script>
+    (function() {
+      let focusMode = false;
+      let focusedStepId = null;
+      const stepBoxes = document.querySelectorAll('.step.box');
+      const focusButton = document.getElementById('focus-button');
+      const tocButtons = [];
+      
+      // Get focus state from URL query parameter
+      function getFocusStateFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('focus') === 'true';
+      }
+      
+      // Update URL with focus state
+      function updateFocusStateInURL(focusEnabled) {
+        const url = new URL(window.location);
+        if (focusEnabled) {
+          url.searchParams.set('focus', 'true');
+        } else {
+          url.searchParams.delete('focus');
+        }
+        // Update URL without page reload
+        window.history.replaceState({}, '', url);
+      }
+      
+      // Initialize focus mode functionality
+      function initFocusMode() {
+        // Get all step headers and boxes
+        const stepHeaders = Array.from(document.querySelectorAll('.step-header.level[data-step-number]'));
+        const tocContainer = document.querySelector('.utility-bar-toc');
+        
+        if (!tocContainer || !focusButton) return;
+        
+        // Check URL for focus state on page load
+        const urlFocusState = getFocusStateFromURL();
+        if (urlFocusState) {
+          focusMode = true;
+        }
+        
+        // Sort step headers by step number
+        stepHeaders.sort((a, b) => {
+          const numA = parseInt(a.getAttribute('data-step-number'), 10);
+          const numB = parseInt(b.getAttribute('data-step-number'), 10);
+          return numA - numB;
+        });
+        
+        // Create TOC buttons for each step
+        stepHeaders.forEach(function(header) {
+          const stepNumber = header.getAttribute('data-step-number');
+          const stepId = header.getAttribute('id');
+          
+          if (!stepId) return;
+          
+          // Find the step box containing this header
+          const stepBox = header.closest('.step.box');
+          if (!stepBox) return;
+          
+          // Create button
+          const button = document.createElement('a');
+          button.href = '#' + stepId;
+          button.textContent = stepNumber;
+          button.className = 'utility-bar-toc-button';
+          button.setAttribute('aria-label', 'Go to step ' + stepNumber);
+          button.setAttribute('data-step-id', stepId);
+          
+          // Add click handler for TOC button
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            setFocusedStep(stepId);
+            scrollToStep(stepId);
+          });
+          
+          tocContainer.appendChild(button);
+          tocButtons.push({ button: button, stepId: stepId, stepBox: stepBox });
+        });
+        
+        // Set default focused step to first one
+        if (stepHeaders.length > 0) {
+          const firstStepId = stepHeaders[0].getAttribute('id');
+          if (firstStepId) {
+            focusedStepId = firstStepId;
+          }
+        }
+        
+        // Add click handler for focus button
+        focusButton.addEventListener('click', function() {
+          toggleFocusMode();
+        });
+        
+        // Apply initial focus state from URL
+        if (focusMode) {
+          applyFocusMode();
+        }
+        
+        // Sync sidebar TOC after Tocbot finishes (with delay)
+        setTimeout(function() {
+          if (focusMode && focusedStepId) {
+            updateSidebarTOCActiveState();
+          }
+          
+          // Add bidirectional sync: TOC link clicks update focused step
+          const desktopToc = document.getElementById('desktop-toc-list');
+          const mobileToc = document.getElementById('mobile-toc-list');
+          
+          function handleTocLinkClick(e) {
+            if (e.target.tagName === 'A' && focusMode) {
+              const href = e.target.getAttribute('href');
+              if (href && href.startsWith('#')) {
+                const stepId = href.substring(1);
+                setFocusedStep(stepId);
+                scrollToStep(stepId);
+              }
+            }
+          }
+          
+          if (desktopToc) {
+            desktopToc.addEventListener('click', handleTocLinkClick);
+          }
+          
+          if (mobileToc) {
+            mobileToc.addEventListener('click', handleTocLinkClick);
+          }
+        }, 150); // Slightly longer delay to ensure Tocbot is done
+      }
+      
+      // Apply focus mode state to UI
+      function applyFocusMode() {
+        const body = document.body;
+        
+        if (focusMode) {
+          body.classList.add('focus-mode');
+          focusButton.textContent = 'Unfocus';
+          // Ensure a step is focused (default to first if none)
+          if (!focusedStepId && tocButtons.length > 0) {
+            focusedStepId = tocButtons[0].stepId;
+          }
+          updateStepVisibility();
+        } else {
+          body.classList.remove('focus-mode');
+          focusButton.textContent = 'Focus';
+          // Show all steps
+          stepBoxes.forEach(function(box) {
+            box.classList.remove('focused');
+          });
+        }
+        
+        updateTOCButtonStates();
+      }
+      
+      // Toggle focus mode on/off
+      function toggleFocusMode() {
+        focusMode = !focusMode;
+        updateFocusStateInURL(focusMode);
+        applyFocusMode();
+      }
+      
+      // Set the focused step
+      function setFocusedStep(stepId) {
+        focusedStepId = stepId;
+        if (focusMode) {
+          updateStepVisibility();
+        }
+        updateTOCButtonStates();
+      }
+      
+      // Update which steps are visible based on focus mode
+      function updateStepVisibility() {
+        if (!focusMode) return;
+        
+        stepBoxes.forEach(function(box) {
+          box.classList.remove('focused');
+          
+          // Check if this box contains the focused step header
+          const header = box.querySelector('.step-header.level[id="' + focusedStepId + '"]');
+          if (header) {
+            box.classList.add('focused');
+          }
+        });
+      }
+      
+      // Update TOC button active states
+      function updateTOCButtonStates() {
+        tocButtons.forEach(function(item) {
+          if (item.stepId === focusedStepId) {
+            item.button.classList.add('active');
+          } else {
+            item.button.classList.remove('active');
+          }
+        });
+        updateSidebarTOCActiveState();
+      }
+      
+      // Update sidebar TOC active state to match focused step
+      function updateSidebarTOCActiveState() {
+        const desktopTocLinks = document.querySelectorAll('#desktop-toc-list a');
+        const mobileTocLinks = document.querySelectorAll('#mobile-toc-list a');
+        
+        // Remove active state from all links
+        [...desktopTocLinks, ...mobileTocLinks].forEach(function(link) {
+          link.classList.remove('is-active');
+        });
+        
+        // Add active state to focused step's TOC link
+        if (focusedStepId) {
+          const targetHref = '#' + focusedStepId;
+          
+          [...desktopTocLinks, ...mobileTocLinks].forEach(function(link) {
+            if (link.getAttribute('href') === targetHref) {
+              link.classList.add('is-active');
+            }
+          });
+        }
+      }
+      
+      // Scroll to a step
+      function scrollToStep(stepId) {
+        const target = document.getElementById(stepId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.pushState(null, null, '#' + stepId);
+        }
+      }
+      
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFocusMode);
+      } else {
+        initFocusMode();
+      }
+    })();
+  </script>
+  
+  <!-- Number TOC items with step numbers -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for Tocbot to finish generating TOC
+      setTimeout(function() {
+        const tocLinks = document.querySelectorAll('#desktop-toc-list a, #mobile-toc-list a');
+        
+        tocLinks.forEach(function(link) {
+          // Get the target ID from href
+          const href = link.getAttribute('href');
+          if (!href || !href.startsWith('#')) return;
+          
+          const targetId = href.substring(1);
+          const targetHeader = document.getElementById(targetId);
+          
+          if (targetHeader && targetHeader.hasAttribute('data-step-number')) {
+            const stepNumber = targetHeader.getAttribute('data-step-number');
+            const originalText = link.textContent.trim();
+            
+            // Prepend step number if not already present
+            if (!originalText.match(/^\d+\.\s/)) {
+              link.textContent = stepNumber + '. ' + originalText;
+            }
+          }
+        });
+      }, 100); // Small delay to ensure Tocbot has finished
+    });
+  </script>
+  
+  <!-- Step header deep linking -->
+  <script>
+    (function() {
+      // Find all step headers with IDs
+      const stepHeaders = document.querySelectorAll('.step-header.level[id]');
+      
+      stepHeaders.forEach(function(header) {
+        // Make headers clickable
+        header.style.cursor = 'pointer';
+        
+        header.addEventListener('click', function(e) {
+          const id = this.getAttribute('id');
+          if (!id) return;
+          
+          // Update URL hash
+          const newUrl = window.location.pathname + '#' + id;
+          window.history.pushState(null, '', newUrl);
+          
+          // Scroll to the element smoothly
+          this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          
+          // Copy link to clipboard
+          const fullUrl = window.location.origin + newUrl;
+          navigator.clipboard.writeText(fullUrl).then(function() {
+            // Visual feedback - briefly change icon
+            const originalOpacity = window.getComputedStyle(this, '::after').opacity;
+            this.style.setProperty('--icon-opacity', '1');
+            setTimeout(() => {
+              this.style.removeProperty('--icon-opacity');
+            }, 500);
+          }.bind(this)).catch(function(err) {
+            console.log('Failed to copy link:', err);
+          });
+          
+          // Prevent default if it was a link
+          e.preventDefault();
+        });
+        
+        // Add title attribute for tooltip
+        const id = header.getAttribute('id');
+        if (id) {
+          header.setAttribute('title', 'Click to copy link to this section');
+        }
+      });
+    })();
+  </script>
+  
+  <!-- Hamburger menu toggle -->
+  <script>
+    (function() {
+      const burger = document.querySelector('.navbar-burger');
+      const menu = document.getElementById('toc-menu');
+      
+      if (burger && menu) {
+        burger.addEventListener('click', function() {
+          burger.classList.toggle('is-active');
+          menu.classList.toggle('is-active');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+
