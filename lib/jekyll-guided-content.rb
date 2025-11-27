@@ -23,9 +23,6 @@ require_relative "jekyll-guided-content/showme"
 require_relative "jekyll-guided-content/level"
 require_relative "jekyll-guided-content/utility_bar_tag"
 
-# 4. Hooks
-require_relative "jekyll-guided-content/utility_bar_hook"
-
 # ---------------------------------------------------------
 # ENSURE EARLY LOADING VIA BUNDLER
 # ---------------------------------------------------------
