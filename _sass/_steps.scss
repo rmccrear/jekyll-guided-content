@@ -1,0 +1,113 @@
+/* Step Container - Uses Bulma's .box component */
+.step.box {
+  margin: $size-6 0;
+  border: 2px solid $grey-lighter-variant;
+  background-color: $grey-lightest;
+  display: block !important;
+  width: 100% !important;
+  column-count: 1 !important;
+  column-width: auto !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  transition: opacity $speed ease, display $speed ease;
+}
+
+/* Focus mode: hide steps that are not focused */
+.focus-mode .step.box {
+  display: none !important;
+}
+
+.focus-mode .step.box.focused {
+  display: block !important;
+}
+
+.step.box:first-child {
+  margin-top: 0;
+}
+
+.step.box:last-child {
+  margin-bottom: 0;
+}
+
+/* Ensure .content wrapper doesn't create columns */
+.step.box .content {
+  display: block !important;
+  column-count: 1 !important;
+  column-width: auto !important;
+  width: 100% !important;
+}
+
+/* Step Header - Uses Bulma's .level class for horizontal layout */
+.step-header.level {
+  font-size: $size-7;
+  font-weight: $weight-semibold;
+  color: $grey-dark;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0;
+  margin-bottom: $size-4;
+  padding-bottom: $size-2;
+  border-bottom: 1px solid $grey-lighter-variant;
+  display: block !important;
+  width: 100% !important;
+  position: relative;
+}
+
+/* Link icon for step headers with IDs - appears on hover */
+.step-header.level[id] {
+  cursor: pointer;
+  transition: color $speed ease;
+}
+
+.step-header.level[id]:hover {
+  color: $link;
+}
+
+.step-header.level[id]::after {
+  content: '🔗';
+  font-size: $size-3;
+  margin-left: $size-2;
+  opacity: 0;
+  transition: opacity $speed ease;
+  vertical-align: middle;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.step-header.level[id]:hover::after {
+  opacity: 0.7;
+}
+
+.step-header.level[id]:active::after {
+  opacity: 1;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.step-header.level[id] {
+  scroll-margin-top: $size-4;
+  padding-top: 2em; // Account for sticky utility bar (2em height)
+}
+
+/* Ensure block-level elements flow vertically (not side-by-side) */
+.step.box .content > p,
+.step.box .content > ul,
+.step.box .content > ol,
+.step.box .content > h1,
+.step.box .content > h2,
+.step.box .content > h3,
+.step.box .content > h4,
+.step.box .content > h5,
+.step.box .content > h6,
+.step.box .content > pre,
+.step.box .content > details,
+.step.box .content > div {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  clear: both !important;
+}
+

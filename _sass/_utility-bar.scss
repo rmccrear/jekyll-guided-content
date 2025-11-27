@@ -1,0 +1,72 @@
+/* Utility Bar - Sticky bar with action buttons */
+.utility-bar {
+  height: 2em;
+  position: sticky;
+  top: 0;
+  background-color: $white;
+  border-bottom: 1px solid $grey-lighter-variant;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 20; // Above content but below mobile navbar (z-index: 30)
+  margin-bottom: $size-4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 $size-4;
+}
+
+.utility-bar-toc {
+  display: flex !important;
+  flex-direction: row;
+  gap: $size-2;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.utility-bar-toc-button {
+  width: 2em !important;
+  height: 2em !important;
+  min-width: 2em !important;
+  min-height: 2em !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $grey-lighter;
+  background-color: $white;
+  color: $grey-dark;
+  text-decoration: none;
+  border-radius: 0; // Square buttons
+  font-weight: $weight-semibold;
+  font-size: $size-7;
+  transition: background-color $speed ease, border-color $speed ease, color $speed ease;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  
+  &:hover {
+    background-color: $grey-lightest;
+    border-color: $link;
+    color: $link;
+  }
+  
+  &.active {
+    background-color: $link;
+    color: $white;
+    border-color: $link;
+  }
+}
+
+.utility-bar-content {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+}
+
+// Mobile: Account for fixed navbar offset
+@media screen and (max-width: 1023px) {
+  .utility-bar {
+    top: 52px; // Height of mobile navbar
+  }
+}
+

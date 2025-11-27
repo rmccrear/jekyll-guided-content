@@ -1,0 +1,33 @@
+/* Lists - Bulma's .content class provides default list styling */
+/* We only override what's necessary for our specific use cases */
+
+/* Regular lists in steps - Minimal override, Bulma handles most styling */
+.step.box .content ul,
+.step.box .content ol {
+  margin: 1em 0;
+  padding-left: 2em; // Relative to font size
+  line-height: 1.6;
+}
+
+.step.box .content ul {
+  list-style-type: disc;
+}
+
+.step.box .content ol {
+  list-style-type: decimal;
+}
+
+.step.box .content li {
+  margin: 0.5em 0; // Relative to font size
+  padding-left: $size-2;
+}
+
+/* Nested lists */
+.step.box .content ul ul,
+.step.box .content ol ol,
+.step.box .content ul ol,
+.step.box .content ol ul {
+  margin: 0.5em 0; // Relative to font size
+  padding-left: $size-6;
+}
+

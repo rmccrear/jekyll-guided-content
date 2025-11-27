@@ -8,6 +8,7 @@ A Jekyll theme for creating course and lesson content with step-by-step guided n
 - **Lesson Pages**: Individual lesson pages with step-by-step content organization
 - **Focus Mode**: Utility bar with numbered step navigation and focus mode
 - **Table of Contents**: Dynamic TOC synchronized with focus state
+- **Pandoc Integration**: Support for advanced Markdown via Pandoc converter
 - **Custom Liquid Tags**: `{% level %}` and `{% showme %}` tags for structured content
 
 ## Installation
@@ -66,7 +67,7 @@ description: Getting started
 ---
 
 {% level subtitle="Getting Started" %}
-## Introduction
+## Step 1: Introduction
 
 Content here...
 {% endlevel %}
@@ -86,7 +87,7 @@ Creates a step container with optional subtitle:
 
 ```liquid
 {% level subtitle="Quick Start" %}
-## Getting Started
+## Step 1: Getting Started
 
 Content here...
 {% endlevel %}
@@ -120,10 +121,20 @@ course:
   lessons_dir: "lessons"           # Directory for lessons (default: "lessons")
 ```
 
+### Pandoc Configuration (Optional)
+
+```yaml
+pandoc:
+  enabled: true                    # Enable Pandoc converter
+  extensions: []                   # Pandoc extensions to use
+```
+
+**Note**: Pandoc must be installed separately if using the Pandoc converter.
+
 ## Dependencies
 
 - Jekyll (>= 3.8, < 5.0)
-- Nokogiri (>= 1.15) - HTML parsing and manipulation
+- Paru (>= 0.3.0) - Ruby wrapper for Pandoc
 
 ### External Resources (CDN)
 

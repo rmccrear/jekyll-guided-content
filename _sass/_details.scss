@@ -1,0 +1,76 @@
+/* Details/Summary - Follows Bulma's card component pattern */
+details {
+  margin: $size-5 0;
+  border: 1px solid $grey-light;
+  border-radius: $radius;
+  background-color: $white;
+  overflow: hidden;
+}
+
+details summary {
+  padding: $size-4 $size-5;
+  font-weight: $weight-semibold;
+  cursor: pointer;
+  background-color: $grey-lightest-variant;
+  user-select: none;
+  transition: background-color $speed ease;
+}
+
+details summary:hover {
+  background-color: $grey-lighter;
+}
+
+details[open] summary {
+  border-bottom: 1px solid $grey-lighter-variant;
+}
+
+details > *:not(summary):not(ul):not(ol) {
+  padding: $size-4 $size-5;
+}
+
+/* Nested details inside steps */
+.step.box details {
+  margin: $size-4 0;
+}
+
+/* Lists inside details/showme tags - Custom styling needed for list-style-position */
+details.showme ul,
+details.showme ol {
+  margin: 1em 0;
+  padding: $size-4 $size-5; // Match details content padding
+  padding-left: 1.25em; // Reduced left padding to bring numbers closer
+  line-height: 1.6;
+  list-style-position: inside; // Bring numbers inside for better alignment
+}
+
+details.showme ul {
+  list-style-type: disc;
+}
+
+details.showme ol {
+  list-style-type: decimal;
+}
+
+details.showme li {
+  margin: 0.5em 0;
+  padding-left: 0; // Remove extra padding on list items
+  line-height: 1.6;
+}
+
+/* Nested lists inside showme details */
+details.showme ul ul,
+details.showme ol ol,
+details.showme ul ol,
+details.showme ol ul {
+  margin: 0.5em 0;
+  padding-left: $size-6;
+}
+
+/* Ensure lists have proper spacing from other content in details */
+details > p + ul,
+details > p + ol,
+details > ul + p,
+details > ol + p {
+  margin-top: 1em;
+}
+
