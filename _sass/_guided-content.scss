@@ -52,15 +52,15 @@
    2. Layout
    ======================================== */
 /* Prevent horizontal scrolling */
-html, body {
-  max-width: 100vw;
-  /* overflow-x: hidden;  <-- Removed to ensure sticky works reliably */
-}
+// html, body {
+//   max-width: 100vw;
+//   /* overflow-x: hidden;  <-- Removed to ensure sticky works reliably */
+// }
 
 .columns.is-gapless {
   min-height: 100vh;
   margin: 0;
-  max-width: 100vw;
+  // max-width: 100vw; // <-- removed since we only need min-width: 0; on the main.column
 }
 
 /* Desktop Sidebar Styling */
@@ -127,11 +127,11 @@ main.column code {
 /* No top margin needed on mobile since navbar is not fixed */
 
 /* Mobile: Ensure full width layout when sidebar is hidden */
-@media screen and (max-width: 1023px) {
-  main.column {
-    max-width: 100vw;
-  }
-}
+// @media screen and (max-width: 1023px) {
+//   main.column {
+//     max-width: 100vw;  // <-- removed since we only need min-width: 0; on the main.column
+//   }
+// }
 
 /* Lesson Header */
 main .container > h1:first-child,
