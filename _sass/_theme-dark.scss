@@ -1,0 +1,33 @@
+// ========================================
+//   Dark Theme
+//   ========================================
+//   A dark theme with high contrast for comfortable reading in low light.
+//   To use: Copy this file to your Jekyll site's _sass/_theme.scss
+//   ========================================
+
+// Background Colors
+$bg-primary: #1a1a1a;              // Dark main background
+$bg-secondary: #2d2d2d;            // Dark sidebar/panels
+$bg-tertiary: #3a3a3a;            // Dark hover states
+$bg-interactive: #4a4a4a;         // Dark interactive elements
+$bg-inverse: #f5f5f5;              // Light backgrounds for contrast
+
+// Text Colors
+$text-primary: #e0e0e0;            // Light text
+$text-heading: #ffffff;            // Bright headings
+$text-inverse: #1a1a1a;           // Dark text on light backgrounds
+
+// Accent Colors
+$accent-primary: #5b9bd5;         // Bright blue accent
+$accent-hover: #7ab8e6;           // Lighter blue on hover
+
+// Border Colors
+$border-subtle: #4a4a4a;          // Subtle dark borders
+$border-default: #3a3a3a;        // Default dark borders
+$border-interactive: #5b9bd5;     // Accent-colored borders
+
+// Scrollbar Colors
+$scrollbar-track: #2d2d2d;
+$scrollbar-thumb: #5a5a5a;
+$scrollbar-thumb-hover: #6a6a6a;
+

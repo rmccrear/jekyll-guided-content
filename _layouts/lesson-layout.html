@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title | default: site.title }}</title>
   <!-- Bulma CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
   <!-- Tocbot CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot/dist/tocbot.css">
   <!-- Custom CSS (loads after Bulma for overrides) -->
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
-  <!-- Highlight.js for syntax highlighting -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <!-- Highlight.js for syntax highlighting - Light theme (default) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light-theme">
+  <!-- Highlight.js Dark theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark-theme" media="none">
 </head>
 <body>
   <!-- Mobile: Hamburger navbar -->
@@ -19,6 +21,13 @@
     <div class="navbar-brand">
       <a class="navbar-item" href="{{ '/' | relative_url }}">
         {{ page.title | default: site.title | default: 'Documentation' }}
+      </a>
+      <!-- Theme Toggle Button (Mobile) -->
+      <a role="button" class="navbar-item is-hidden-desktop theme-toggle" aria-label="toggle theme">
+        <span class="icon">
+          <span class="theme-icon-light">🌞</span>
+          <span class="theme-icon-dark" style="display: none;">🌙</span>
+        </span>
       </a>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="toc-menu">
         <span aria-hidden="true"></span>
@@ -50,6 +59,16 @@
         <a href="{{ '/' | relative_url }}" class="button is-light is-small is-fullwidth" style="margin-bottom: 1rem;">
           ← {% assign index_page = site.pages | where: "path", "index.md" | first %}{{ index_page.title | default: site.title | default: 'Course' }}
         </a>
+        
+        <!-- Theme Toggle Button (Desktop Sidebar) -->
+        <button class="button is-light is-small is-fullwidth theme-toggle" style="margin-bottom: 1rem;">
+          <span class="icon">
+            <span class="theme-icon-light">🌞</span>
+            <span class="theme-icon-dark" style="display: none;">🌙</span>
+          </span>
+          <span>Toggle Theme</span>
+        </button>
+
         <aside class="menu">
           <p class="menu-label">Table of Contents</p>
           <ul class="menu-list" id="desktop-toc-list">
@@ -475,6 +494,59 @@
       }
     })();
   </script>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    (function() {
+      const themeToggles = document.querySelectorAll('.theme-toggle');
+      const html = document.documentElement;
+      const lightIcons = document.querySelectorAll('.theme-icon-light');
+      const darkIcons = document.querySelectorAll('.theme-icon-dark');
+
+      // Function to set theme
+      function setTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        // Update icons
+        if (theme === 'dark') {
+          lightIcons.forEach(icon => icon.style.display = 'none');
+          darkIcons.forEach(icon => icon.style.display = 'inline');
+        } else {
+          lightIcons.forEach(icon => icon.style.display = 'inline');
+          darkIcons.forEach(icon => icon.style.display = 'none');
+        }
+        
+        // Switch highlight.js theme
+        const lightTheme = document.getElementById('highlight-light-theme');
+        const darkTheme = document.getElementById('highlight-dark-theme');
+        if (lightTheme && darkTheme) {
+          if (theme === 'dark') {
+            lightTheme.setAttribute('media', 'none');
+            darkTheme.setAttribute('media', 'all');
+          } else {
+            lightTheme.setAttribute('media', 'all');
+            darkTheme.setAttribute('media', 'none');
+          }
+        }
+      }
+
+      // Check for saved preference or system preference
+      const savedTheme = localStorage.getItem('theme');
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      
+      // Initial set
+      setTheme(savedTheme || systemTheme);
+
+      // Add click handlers
+      themeToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          setTheme(newTheme);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
-
