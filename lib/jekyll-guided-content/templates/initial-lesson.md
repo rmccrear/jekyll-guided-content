@@ -52,7 +52,9 @@ Install the gem, configure Jekyll to use it, and verify the setup works correctl
 
 - Add the gem to your `Gemfile` in the `:jekyll_plugins` group
 - Run `bundle install` to install dependencies
-- Add the gem to the `plugins:` array in `_config.yml`
+- **CRITICAL**: Configure the gem in `_config.yml` as BOTH a theme AND a plugin:
+  - Set `theme: jekyll-guided-content` (required for layouts and assets)
+  - Add `jekyll-guided-content` to the `plugins:` array (required for Liquid tags and commands)
 - Test the installation by running `bundle exec jekyll build`
 
 ### 💡 Code Hints
@@ -72,9 +74,12 @@ end
 {% showme "Show Me: Jekyll Configuration" %}
 ```yaml
 # _config.yml
+theme: jekyll-guided-content
 plugins:
   - jekyll-guided-content
 ```
+
+**Important**: The gem must be configured as both a **theme** (for layouts and assets) AND a **plugin** (for Liquid tags and commands).
 {% endshowme %}
 
 ### 🔍 Diving Deeper
@@ -86,19 +91,23 @@ plugins:
 - **Versioning**: You can pin to specific versions or update when ready
 - **Sharing**: Easy to share the gem across multiple projects
 
-**How Jekyll plugins work:**
+**How Jekyll themes and plugins work:**
 
-- Plugins in the `plugins:` array are loaded during Jekyll's initialization
-- The gem registers custom Liquid tags, converters, and hooks
-- Layouts and assets from the gem are automatically available to your site
+- **Theme (`theme: jekyll-guided-content`)**: Exposes layouts, includes, and assets from the gem
+  - Makes `course` and `lesson-layout` layouts available
+  - Provides CSS and other assets automatically
+- **Plugin (`plugins: [jekyll-guided-content]`)**: Loads Ruby code during Jekyll initialization
+  - Registers custom Liquid tags ({% raw %}`{% level %}`, `{% showme %}`, `{% utility_bar %}`{% endraw %})
+  - Provides Jekyll subcommands (`init-course`, `scaffold-lesson`, etc.)
+- **Both are required**: The gem functions as both a theme (for UI) and a plugin (for functionality)
 
 ### ✅ Check
 
 1. The gem is listed in your `Gemfile` under `:jekyll_plugins`
 2. You have run `bundle install` successfully
-3. The gem is in the `plugins:` array in `_config.yml`
+3. **Both** `theme: jekyll-guided-content` and `plugins: [jekyll-guided-content]` are configured in `_config.yml`
 4. `bundle exec jekyll build` completes without errors
-5. No "Unknown tag" errors appear in the build output
+5. No "Unknown tag" or "Layout not found" errors appear in the build output
 
 ---
 
@@ -117,10 +126,11 @@ Create `_data/course.yml` to define course metadata and lesson organization, the
 
 ### Instructions
 
-**Option 1: Use the init script (Recommended)**
-- Run `ruby bin/init_course.rb` from your project root
+**Option 1: Use the Jekyll command (Recommended)**
+- Run `bundle exec jekyll init-course` from your project root
 - Enter your course title and description when prompted
-- The script will create `_data/course.yml`, `index.md`, and a sample lesson automatically
+- The command will create `_data/course.yml`, `index.md`, and a sample lesson automatically
+- **Note**: The command should automatically configure `theme: jekyll-guided-content` in your `_config.yml`
 
 **Option 2: Manual setup**
 - Create the `_data/` directory if it doesn't exist
@@ -132,12 +142,12 @@ Create `_data/course.yml` to define course metadata and lesson organization, the
 
 Need help with the course structure? Check out these snippets:
 
-{% showme "Show Me: Using the Init Script" %}
+{% showme "Show Me: Using the Init Command" %}
 ```bash
 # From your Jekyll project root
-ruby bin/init_course.rb
+bundle exec jekyll init-course
 
-# The script will prompt you for:
+# The command will prompt you for:
 # - Course Title
 # - Course Description
 
@@ -145,7 +155,11 @@ ruby bin/init_course.rb
 # - _data/course.yml (with course metadata)
 # - index.md (course index page)
 # - lessons/sample-lesson/index.md (full guided-content lesson template)
-# - _agent_config/LESSON_PROMPT.md (lesson creation guide)
+# - _agent_config/LESSON_PROMPT.md (lesson creation guide, if available)
+# - Configures theme: jekyll-guided-content in _config.yml
+
+# Or use with options:
+bundle exec jekyll init-course --title "My Course" --description "My description"
 ```
 {% endshowme %}
 
@@ -205,29 +219,39 @@ Select a lesson from the cards below to get started!
 - The `order` field controls the sequence (lower numbers appear first)
 - You can override lesson titles/descriptions here or use page front matter
 
-**Helper Scripts:**
+**Jekyll Commands:**
 
-The gem includes helper scripts to streamline course creation:
+The gem provides Jekyll subcommands to streamline course creation:
 
-- **`bin/init_course.rb`**: Initializes a new course with all necessary files
+- **`bundle exec jekyll init-course`**: Initializes a new course with all necessary files
   - Creates `_data/course.yml` with your course metadata
   - Creates `index.md` with the course layout
   - Creates a sample lesson (full guided-content template)
-  - Copies `LESSON_PROMPT.md` to `_agent_config/` for reference
+  - Configures `theme: jekyll-guided-content` in `_config.yml` (if the file exists)
+  - Copies `LESSON_PROMPT.md` to `_agent_config/` for reference (if available)
 
-- **`bin/create_sample_lesson.rb`**: Creates a new lesson with filler content
+- **`bundle exec jekyll create-sample-lesson`**: Creates a new lesson with filler content
   - Takes lesson slug, title, and description as parameters
   - Creates the lesson directory and markdown file
   - Generates three levels with sample content (Introduction, Getting Started, Advanced Application)
   - Automatically adds the lesson to `_data/course.yml` with the next order number
 
+- **`bundle exec jekyll scaffold-lesson`**: Creates a new lesson with basic template
+  - Takes lesson slug, title, and description as parameters
+  - Creates a simple 3-level template ready to customize
+  - Automatically adds the lesson to `_data/course.yml`
+
 **Example usage:**
 ```bash
 # Initialize a new course
-ruby bin/init_course.rb
+bundle exec jekyll init-course
 
-# Create additional lessons with filler content
-ruby bin/create_sample_lesson.rb my-lesson "My Lesson" "Description here"
+# Or with options:
+bundle exec jekyll init-course --title "My Course" --description "Description"
+
+# Create additional lessons
+bundle exec jekyll scaffold-lesson my-lesson "My Lesson" "Description"
+bundle exec jekyll create-sample-lesson my-lesson "My Lesson" "Description"
 ```
 
 ### ✅ Check
@@ -255,15 +279,15 @@ Create a lesson directory, add the lesson file with proper front matter, and str
 
 ### Instructions
 
-**Option 1: Use the sample lesson script (Quick start with filler content)**
-- Run `ruby bin/create_sample_lesson.rb my-first-lesson "My First Lesson" "Description"`
+**Option 1: Use the Jekyll command with filler content (Quick start)**
+- Run `bundle exec jekyll create-sample-lesson my-first-lesson "My First Lesson" "Description"`
 - This creates a lesson with three levels of filler content ready to customize
-- The script automatically adds the lesson to `_data/course.yml`
+- The command automatically adds the lesson to `_data/course.yml`
 
-**Option 2: Use the scaffolder script (Basic template)**
-- Run `ruby bin/scaffold_lesson.rb my-first-lesson "My First Lesson" "Description"`
+**Option 2: Use the Jekyll scaffolder command (Basic template)**
+- Run `bundle exec jekyll scaffold-lesson my-first-lesson "My First Lesson" "Description"`
 - This creates a lesson with a simple 3-level template
-- The script automatically adds the lesson to `_data/course.yml`
+- The command automatically adds the lesson to `_data/course.yml`
 
 **Option 3: Manual creation**
 - Manually create `lessons/my-first-lesson/index.md`
@@ -356,7 +380,7 @@ lessons:
 
 1. The lesson directory exists at `lessons/[lesson-name]/`
 2. The lesson file `index.md` has proper front matter
-3. The lesson includes `{% utility_bar %}` tag
+3. The lesson includes {% raw %}`{% utility_bar %}`{% endraw %} tag
 4. At least one `{% raw %}{% level %}{% endraw %}` tag is present with content
 5. The lesson appears in `_data/course.yml` with correct path
 6. The lesson displays correctly when viewing the course index

@@ -34,6 +34,20 @@
     }
 }
 
+/* Dark theme override using data-theme attribute (for manual toggle) */
+[data-theme="dark"] {
+    --sidebar-bg: var(--bulma-scheme-main-bis); 
+    --sidebar-border: var(--bulma-border);
+    --utility-bar-bg: var(--bulma-scheme-main);
+    --step-bg: var(--bulma-scheme-main-ter);
+    
+    --details-border: var(--bulma-border);
+    --details-bg: var(--bulma-scheme-main);
+    --details-summary-bg: var(--bulma-background);
+    --details-summary-hover: var(--bulma-border);
+    --details-separator: var(--bulma-border);
+}
+
 /* ========================================
    2. Layout
    ======================================== */
