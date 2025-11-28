@@ -8,11 +8,15 @@ Add to your Jekyll site's `Gemfile`:
 
 ```ruby
 group :jekyll_plugins do
-  gem "jekyll-guided-content", path: "../jekyll-guided-content"  # For local development
-  # Or from RubyGems:
-  # gem "jekyll-guided-content"
+  gem "jekyll-guided-content"
+  # Or from GitHub (for latest version):
+  # gem "jekyll-guided-content", git: "https://github.com/rmccrear/jekyll-guided-content.git", branch: "bulma-v1"
+  # Or for local development:
+  # gem "jekyll-guided-content", path: "../jekyll-guided-content"
 end
 ```
+
+**Important**: If you created your site with `jekyll new`, the default `Gemfile` includes `gem "minima"`. The `init-course` command will automatically comment this out for you.
 
 Then run:
 ```bash
@@ -68,6 +72,8 @@ bundle exec jekyll init-course
 
 This will automatically:
 - ✅ Configure `_config.yml` with `theme: jekyll-guided-content` and plugin
+- ✅ Update `Gemfile` to comment out default themes (like `minima`) and ensure gem is included
+- ✅ Fix `assets/css/main.scss` to import theme styles
 - ✅ Create `_data/course.yml` with course metadata
 - ✅ Create `index.md` with course layout
 - ✅ Create a sample lesson to get you started

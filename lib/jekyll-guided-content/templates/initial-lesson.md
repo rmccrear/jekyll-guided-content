@@ -50,12 +50,43 @@ Install the gem, configure Jekyll to use it, and verify the setup works correctl
 
 ### Instructions
 
-- Add the gem to your `Gemfile` in the `:jekyll_plugins` group
-- Run `bundle install` to install dependencies
-- **CRITICAL**: Configure the gem in `_config.yml` as BOTH a theme AND a plugin:
-  - Set `theme: jekyll-guided-content` (required for layouts and assets)
-  - Add `jekyll-guided-content` to the `plugins:` array (required for Liquid tags and commands)
-- Test the installation by running `bundle exec jekyll build`
+**Option 1: Use the `init-course` command (Recommended - Automated Setup)**
+
+The `init-course` command handles all configuration automatically:
+
+1. Add the gem to your `Gemfile` in the `:jekyll_plugins` group:
+   ```ruby
+   group :jekyll_plugins do
+     gem "jekyll-guided-content"
+     # Or from GitHub:
+     # gem "jekyll-guided-content", git: "https://github.com/rmccrear/jekyll-guided-content.git", branch: "bulma-v1"
+   end
+   ```
+
+2. Run `bundle install` to install dependencies
+
+3. Run `bundle exec jekyll init-course` - this automatically:
+   - ✅ Configures `_config.yml` with `theme: jekyll-guided-content` and `plugins: [jekyll-guided-content]`
+   - ✅ Updates `Gemfile` to comment out default themes (like `minima`)
+   - ✅ Fixes `assets/css/main.scss` to import `"guided-content"` styles
+   - ✅ Creates `_data/course.yml` with course metadata
+   - ✅ Creates `index.md` with course layout
+   - ✅ Creates a sample lesson to get you started
+
+4. Test the installation by running `bundle exec jekyll build`
+
+**Option 2: Manual Setup**
+
+If you prefer manual configuration:
+
+1. Add the gem to your `Gemfile` in the `:jekyll_plugins` group
+2. Run `bundle install` to install dependencies
+3. **CRITICAL**: Configure the gem in `_config.yml` as BOTH a theme AND a plugin:
+   - Set `theme: jekyll-guided-content` (required for layouts and assets)
+   - Add `jekyll-guided-content` to the `plugins:` array (required for Liquid tags and commands)
+4. Update `Gemfile`: Comment out any default theme gems (like `minima`)
+5. Fix `assets/css/main.scss`: Ensure it imports `"guided-content"` instead of `"base"` or `"minima"`
+6. Test the installation by running `bundle exec jekyll build`
 
 ### 💡 Code Hints
 
@@ -64,11 +95,16 @@ Need help with the setup? Check out these snippets:
 {% showme "Show Me: Gemfile Configuration" %}
 ```ruby
 group :jekyll_plugins do
-  gem "jekyll-guided-content", path: "../jekyll-guided-content"  # For local development
-  # Or from RubyGems:
-  # gem "jekyll-guided-content"
+  gem "jekyll-guided-content"
+  # Or from GitHub:
+  # gem "jekyll-guided-content", git: "https://github.com/rmccrear/jekyll-guided-content.git", branch: "bulma-v1"
 end
+
+# If you created your site with 'jekyll new', comment out the default theme:
+# gem "minima", "~> 2.5"  # Commented out - using jekyll-guided-content theme
 ```
+
+**Note**: The `init-course` command automatically handles this configuration.
 {% endshowme %}
 
 {% showme "Show Me: Jekyll Configuration" %}
@@ -80,6 +116,18 @@ plugins:
 ```
 
 **Important**: The gem must be configured as both a **theme** (for layouts and assets) AND a **plugin** (for Liquid tags and commands).
+
+**Note**: The `init-course` command automatically configures this.
+{% endshowme %}
+
+{% showme "Show Me: CSS Configuration" %}
+```scss
+// assets/css/main.scss
+// Import the consolidated guided content styles
+@import "guided-content";
+```
+
+**Note**: The `init-course` command automatically updates this file.
 {% endshowme %}
 
 ### 🔍 Diving Deeper
@@ -104,10 +152,14 @@ plugins:
 ### ✅ Check
 
 1. The gem is listed in your `Gemfile` under `:jekyll_plugins`
-2. You have run `bundle install` successfully
-3. **Both** `theme: jekyll-guided-content` and `plugins: [jekyll-guided-content]` are configured in `_config.yml`
-4. `bundle exec jekyll build` completes without errors
-5. No "Unknown tag" or "Layout not found" errors appear in the build output
+2. Any default theme gems (like `minima`) are commented out in your `Gemfile`
+3. You have run `bundle install` successfully
+4. **Both** `theme: jekyll-guided-content` and `plugins: [jekyll-guided-content]` are configured in `_config.yml`
+5. Your `assets/css/main.scss` imports `"guided-content"` (not `"base"` or `"minima"`)
+6. `bundle exec jekyll build` completes without errors
+7. No "Unknown tag" or "Layout not found" errors appear in the build output
+
+**Tip**: If you used `init-course`, all of these steps were done automatically!
 
 ---
 
@@ -129,8 +181,11 @@ Create `_data/course.yml` to define course metadata and lesson organization, the
 **Option 1: Use the Jekyll command (Recommended)**
 - Run `bundle exec jekyll init-course` from your project root
 - Enter your course title and description when prompted
-- The command will create `_data/course.yml`, `index.md`, and a sample lesson automatically
-- **Note**: The command should automatically configure `theme: jekyll-guided-content` in your `_config.yml`
+- The command automatically:
+  - Configures `_config.yml` with `theme: jekyll-guided-content` and plugin
+  - Updates `Gemfile` to comment out default themes
+  - Fixes `assets/css/main.scss` to import theme styles
+  - Creates `_data/course.yml`, `index.md`, and a sample lesson
 
 **Option 2: Manual setup**
 - Create the `_data/` directory if it doesn't exist
@@ -151,14 +206,16 @@ bundle exec jekyll init-course
 # - Course Title
 # - Course Description
 
-# It automatically creates:
-# - _data/course.yml (with course metadata)
-# - index.md (course index page)
-# - lessons/sample-lesson/index.md (full guided-content lesson template)
-# - _agent_config/LESSON_PROMPT.md (lesson creation guide, if available)
-# - Configures theme: jekyll-guided-content in _config.yml
+# It automatically configures and creates:
+# ✅ _config.yml: Adds theme: jekyll-guided-content and plugins: [jekyll-guided-content]
+# ✅ Gemfile: Comments out default themes (like minima), ensures gem is included
+# ✅ assets/css/main.scss: Updates to import "guided-content" styles
+# ✅ _data/course.yml: Creates with your course metadata
+# ✅ index.md: Creates course index page with course layout
+# ✅ lessons/sample-lesson/index.md: Creates full guided-content lesson template
+# ✅ _agent_config/LESSON_PROMPT.md: Copies lesson creation guide (if available)
 
-# Or use with options:
+# Or use with options to skip prompts:
 bundle exec jekyll init-course --title "My Course" --description "My description"
 ```
 {% endshowme %}
@@ -224,10 +281,12 @@ Select a lesson from the cards below to get started!
 The gem provides Jekyll subcommands to streamline course creation:
 
 - **`bundle exec jekyll init-course`**: Initializes a new course with all necessary files
+  - Configures `_config.yml` with `theme: jekyll-guided-content` and `plugins: [jekyll-guided-content]`
+  - Updates `Gemfile` to comment out default themes (like `minima`) and ensures gem is included
+  - Fixes `assets/css/main.scss` to import `"guided-content"` styles
   - Creates `_data/course.yml` with your course metadata
   - Creates `index.md` with the course layout
   - Creates a sample lesson (full guided-content template)
-  - Configures `theme: jekyll-guided-content` in `_config.yml` (if the file exists)
   - Copies `LESSON_PROMPT.md` to `_agent_config/` for reference (if available)
 
 - **`bundle exec jekyll create-sample-lesson`**: Creates a new lesson with filler content
@@ -351,13 +410,13 @@ lessons:
 
 ### 🔍 Diving Deeper
 
-**Why use the helper scripts?**
+**Why use the Jekyll commands?**
 
 - **Consistency**: Ensures all lessons follow the same structure
 - **Time Saving**: Automatically creates directory, file, and updates course.yml
 - **Templates**: Provides ready-to-customize templates
-  - `create_sample_lesson.rb`: Full 3-level template with filler content (Introduction, Getting Started, Advanced Application)
-  - `scaffold_lesson.rb`: Simple 3-level template (Introduction, Getting Started, Wrap up)
+  - `bundle exec jekyll create-sample-lesson`: Full 3-level template with filler content (Introduction, Getting Started, Advanced Application)
+  - `bundle exec jekyll scaffold-lesson`: Simple 3-level template (Introduction, Getting Started, Wrap up)
 - **Error Prevention**: Handles path matching and order numbering automatically
 - **Agent Support**: `LESSON_PROMPT.md` in `_agent_config/` provides detailed guidance for AI assistants
 
