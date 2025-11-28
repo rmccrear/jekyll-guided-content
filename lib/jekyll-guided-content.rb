@@ -23,6 +23,11 @@ require_relative "jekyll-guided-content/showme"
 require_relative "jekyll-guided-content/level"
 require_relative "jekyll-guided-content/utility_bar_tag"
 
+# 2. Commands (Must be required for Jekyll CLI to recognize them)
+require_relative "jekyll-guided-content/commands/init_course"
+require_relative "jekyll-guided-content/commands/scaffold_lesson"
+require_relative "jekyll-guided-content/commands/create_sample_lesson"
+
 # ---------------------------------------------------------
 # ENSURE EARLY LOADING VIA BUNDLER
 # ---------------------------------------------------------
