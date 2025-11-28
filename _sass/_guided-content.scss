@@ -98,13 +98,13 @@ main.column {
 /* Ensure containers don't cause horizontal overflow */
 /* Note: Don't add overflow here as it breaks sticky positioning of utility bar */
 main.column .section {
-  max-width: 100%;
+  // max-width: 100%; <-- DELETE (Block elements do this automatically, Don't need for sticky positioning fix)
   /* Ensure section allows sticky positioning context */
   /* Don't add overflow or position that would break sticky */
 }
 
 main.column .container {
-  max-width: 100%;
+  // max-width: 100%; <-- DELETE (Block elements do this automatically, Don't need for sticky positioning fix)
   /* Container should not interfere with sticky positioning */
 }
 
@@ -191,9 +191,12 @@ main .container > h1:first-child + p {
 }
 
 .utility-bar-toc-button {
-  width: 2em !important;
-  height: 2em !important;
-  display: inline-flex !important;
+  // width: 2em !important; // !important is not needed for the sticky positioning fix
+  // height: 2em !important; // !important is not needed for the sticky positioning fix
+  // display: inline-flex !important; // !important is not needed for the sticky positioning fix
+  width: 2em; 
+  height: 2em;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--bulma-border);
