@@ -8,7 +8,6 @@ A Jekyll theme for creating course and lesson content with step-by-step guided n
 - **Lesson Pages**: Individual lesson pages with step-by-step content organization
 - **Focus Mode**: Utility bar with numbered step navigation and focus mode
 - **Table of Contents**: Dynamic TOC synchronized with focus state
-- **Pandoc Integration**: Support for advanced Markdown via Pandoc converter
 - **Custom Liquid Tags**: `{% level %}` and `{% showme %}` tags for structured content
 
 ## Installation
@@ -55,6 +54,7 @@ This command will:
 - Create `_data/course.yml` with course metadata
 - Create `index.md` with course layout
 - Create a sample lesson to get you started
+- Create `_agent_config/LESSON_PROMPT.md` with prompts for LLM agents to create lessons
 
 ### Manual Setup
 
@@ -110,7 +110,7 @@ description: Getting started
 ---
 
 {% level subtitle="Getting Started" %}
-## Step 1: Introduction
+## Introduction
 
 Content here...
 {% endlevel %}
@@ -154,6 +154,18 @@ Create a new lesson with filler content for testing.
 bundle exec jekyll create-sample-lesson LESSON_DIR "Lesson Title" "Lesson Description"
 ```
 
+## LLM Agent Support
+
+The `init-course` command creates an `_agent_config/` directory containing prompts and configuration for LLM agents:
+
+- **`_agent_config/LESSON_PROMPT.md`**: A comprehensive prompt template for creating lessons and levels using the jekyll-guided-content syntax. This file includes:
+  - Format guidelines for complete lessons
+  - Structure templates for levels
+  - Style guidelines for content
+  - Examples of different lesson types (planning, challenge, completion)
+
+**For LLM Agents**: After running `init-course` or any of the lesson creation commands, check the `_agent_config/` directory for documentation and prompts to help create course content. The `LESSON_PROMPT.md` file contains detailed instructions on how to structure lessons with the proper Liquid tags, user stories, goals, and verification steps.
+
 ## Custom Liquid Tags
 
 ### `{% level %}` Tag
@@ -162,7 +174,7 @@ Creates a step container with optional subtitle:
 
 ```liquid
 {% level subtitle="Quick Start" %}
-## Step 1: Getting Started
+## Getting Started
 
 Content here...
 {% endlevel %}
@@ -196,20 +208,10 @@ course:
   lessons_dir: "lessons"           # Directory for lessons (default: "lessons")
 ```
 
-### Pandoc Configuration (Optional)
-
-```yaml
-pandoc:
-  enabled: true                    # Enable Pandoc converter
-  extensions: []                   # Pandoc extensions to use
-```
-
-**Note**: Pandoc must be installed separately if using the Pandoc converter.
-
 ## Dependencies
 
 - Jekyll (>= 3.8, < 5.0)
-- Paru (>= 0.3.0) - Ruby wrapper for Pandoc
+- Nokogiri (>= 1.15) - HTML parsing and manipulation
 
 ### External Resources (CDN)
 

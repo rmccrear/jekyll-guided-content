@@ -9,14 +9,5 @@
 //   and maintainability. Variables are defined based on Bulma 0.9.4
 //   ========================================
 
-// Import all partials in dependency order
-@import "variables";
-@import "layout";
-@import "utility-bar";
-@import "steps";
-@import "typography";
-@import "lists";
-@import "details";
-@import "toc";
-@import "mobile-toc";
-@import "scrollbar";
+// Import the consolidated guided content styles
+@import "guided-content";
