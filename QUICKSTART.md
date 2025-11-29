@@ -8,11 +8,15 @@ Add to your Jekyll site's `Gemfile`:
 
 ```ruby
 group :jekyll_plugins do
-  gem "jekyll-guided-content", path: "../jekyll-guided-content"  # For local development
-  # Or from RubyGems:
-  # gem "jekyll-guided-content"
+  gem "jekyll-guided-content"
+  # Or from GitHub (for latest version):
+  # gem "jekyll-guided-content", git: "https://github.com/rmccrear/jekyll-guided-content.git", branch: "bulma-v1"
+  # Or for local development:
+  # gem "jekyll-guided-content", path: "../jekyll-guided-content"
 end
 ```
+
+**Important**: If you created your site with `jekyll new`, the default `Gemfile` includes `gem "minima"`. The `init-course` command will automatically comment this out for you.
 
 Then run:
 ```bash
@@ -21,15 +25,24 @@ bundle install
 
 ## Configuration
 
+**CRITICAL**: The gem must be configured as both a **theme** (for layouts and assets) AND a **plugin** (for Liquid tags and commands).
+
 Add to your `_config.yml`:
 
 ```yaml
+theme: jekyll-guided-content
 plugins:
   - jekyll-guided-content
 
 # Optional: Configure Pandoc if using markdown conversion
 # The gem will use Pandoc via the 'paru' gem if available
 ```
+
+**Important Notes:**
+- `theme:` is required for layouts (`course`, `lesson-layout`) and assets to work
+- `plugins:` is required for Liquid tags (`{% level %}`, `{% showme %}`, `{% utility_bar %}`) and Jekyll commands
+- Both must be present for the gem to function correctly
+- **If you use `bundle exec jekyll init-course`, this configuration is done automatically**
 
 ## Project Structure
 
@@ -49,9 +62,25 @@ your-site/
 └── Gemfile
 ```
 
+## Quick Start with Commands
+
+The easiest way to get started is using the `init-course` command:
+
+```bash
+bundle exec jekyll init-course
+```
+
+This will automatically:
+- ✅ Configure `_config.yml` with `theme: jekyll-guided-content` and plugin
+- ✅ Update `Gemfile` to comment out default themes (like `minima`) and ensure gem is included
+- ✅ Fix `assets/css/main.scss` to import theme styles
+- ✅ Create `_data/course.yml` with course metadata
+- ✅ Create `index.md` with course layout
+- ✅ Create a sample lesson to get you started
+
 ## Step 1: Create Course Data File
 
-Create `_data/course.yml`:
+If you prefer manual setup, create `_data/course.yml`:
 
 ```yaml
 title: Your Course Name
@@ -83,18 +112,30 @@ Add your course introduction content below the front matter.
 
 ## Step 3: Create Your First Lesson
 
-### Option A: Use the Scaffolder (Recommended)
+### Option A: Use Jekyll Commands (Recommended)
 
-If you have the scaffolder script in your project:
+The gem provides Jekyll subcommands for easy course and lesson creation:
 
+**Initialize a new course:**
 ```bash
-ruby bin/scaffold_lesson.rb my-first-lesson "My First Lesson" "Learn the basics"
+bundle exec jekyll init-course
 ```
 
-This will:
+**Create a new lesson:**
+```bash
+bundle exec jekyll scaffold-lesson my-first-lesson "My First Lesson" "Learn the basics"
+```
+
+**Create a lesson with filler content:**
+```bash
+bundle exec jekyll create-sample-lesson my-first-lesson "My First Lesson" "Learn the basics"
+```
+
+These commands will:
 - ✅ Add the lesson to `_data/course.yml`
-- ✅ Create `lessons/my-first-lesson/index.md` with a 3-step template
+- ✅ Create `lessons/my-first-lesson/index.md` with templates
 - ✅ Set up proper front matter and structure
+- ✅ Automatically configure the correct order
 
 ### Option B: Manual Creation
 
@@ -215,11 +256,12 @@ Content for step 3.
 
 ## Tips
 
-1. **Use the scaffolder**: It saves time and ensures consistency
-2. **Order matters**: Set `order` in `course.yml` to control lesson sequence
-3. **Descriptions help**: Add descriptions to lessons for better course cards
-4. **Focus mode**: Great for learners who want to focus on one step at a time
-5. **Showme tags**: Use for hints, additional info, or optional content
+1. **Use Jekyll commands**: Use `bundle exec jekyll init-course`, `scaffold-lesson`, and `create-sample-lesson` for consistency and speed
+2. **Configure both theme and plugin**: Remember to set both `theme: jekyll-guided-content` AND add it to `plugins:` in `_config.yml`
+3. **Order matters**: Set `order` in `course.yml` to control lesson sequence
+4. **Descriptions help**: Add descriptions to lessons for better course cards
+5. **Focus mode**: Great for learners who want to focus on one step at a time
+6. **Showme tags**: Use for hints, additional info, or optional content
 
 ## Next Steps
 
@@ -236,9 +278,15 @@ Content for step 3.
 - Verify the lesson has proper front matter
 
 **Tags not working?**
-- Make sure `jekyll-guided-content` is in the `plugins:` array in `_config.yml`
+- Make sure `jekyll-guided-content` is in both the `theme:` and `plugins:` configuration in `_config.yml`
+- Verify both are present: `theme: jekyll-guided-content` AND `plugins: [jekyll-guided-content]`
 - Check that you're using the correct tag syntax
 - Run `bundle exec jekyll build` to see error messages
+
+**Layouts not found?**
+- Ensure `theme: jekyll-guided-content` is set in `_config.yml`
+- The gem must be configured as a theme to expose layouts
+- Check build output for layout-related warnings
 
 **Styling issues?**
 - The gem includes default styles, but you can override them

@@ -16,8 +16,14 @@ A Jekyll theme for creating course and lesson content with step-by-step guided n
 Add this line to your Jekyll site's `Gemfile`:
 
 ```ruby
-gem "jekyll-guided-content"
+group :jekyll_plugins do
+  gem "jekyll-guided-content"
+  # Or from GitHub (for latest version):
+  # gem "jekyll-guided-content", git: "https://github.com/rmccrear/jekyll-guided-content.git", branch: "bulma-v1"
+end
 ```
+
+**Important**: If you created your site with `jekyll new`, the default `Gemfile` includes `gem "minima"`. The `init-course` command will automatically comment this out for you.
 
 And then execute:
 
@@ -33,15 +39,40 @@ gem install jekyll-guided-content
 
 ## Usage
 
-### 1. Configure Your Site
+### Quick Start with Commands
+
+The gem provides Jekyll subcommands for easy setup:
+
+**Initialize a new course** (automatically configures everything):
+```bash
+bundle exec jekyll init-course
+```
+
+This command will:
+- Configure `_config.yml` with `theme: jekyll-guided-content` and plugin
+- Update `Gemfile` to comment out default themes (like `minima`) and ensure gem is included
+- Fix `assets/css/main.scss` to import theme styles
+- Create `_data/course.yml` with course metadata
+- Create `index.md` with course layout
+- Create a sample lesson to get you started
+
+### Manual Setup
+
+#### 1. Configure Your Site
+
+**CRITICAL**: The gem must be configured as both a **theme** (for layouts and assets) AND a **plugin** (for Liquid tags and commands).
 
 In your `_config.yml`:
 
 ```yaml
 theme: jekyll-guided-content
+plugins:
+  - jekyll-guided-content
 ```
 
-### 2. Create Course Index
+**Note**: If you use `bundle exec jekyll init-course`, this configuration is done automatically.
+
+#### 2. Create Course Index
 
 Create `index.md`:
 
@@ -55,9 +86,21 @@ description: Learn something new
 Welcome to my course!
 ```
 
-### 4. Create Lessons
+### 3. Create Lessons
 
-Create lessons in `lessons/[name]/index.md`:
+Use Jekyll commands to create lessons:
+
+**Create a lesson with basic template:**
+```bash
+bundle exec jekyll scaffold-lesson my-lesson "My Lesson" "Description"
+```
+
+**Create a lesson with filler content:**
+```bash
+bundle exec jekyll create-sample-lesson my-lesson "My Lesson" "Description"
+```
+
+Or manually create lessons in `lessons/[name]/index.md`:
 
 ```yaml
 ---
@@ -73,10 +116,42 @@ Content here...
 {% endlevel %}
 ```
 
-### 5. Build and Serve
+### 4. Build and Serve
 
 ```bash
 bundle exec jekyll serve
+```
+
+## Jekyll Commands
+
+The gem provides several Jekyll subcommands for managing your course:
+
+### `init-course`
+
+Initialize a new course structure. This automatically configures `_config.yml` with the required theme and plugin settings.
+
+```bash
+bundle exec jekyll init-course [--title TITLE] [--description DESC]
+```
+
+Options:
+- `--title TITLE`: Course title (will prompt if not provided)
+- `--description DESC`: Course description (will prompt if not provided)
+
+### `scaffold-lesson`
+
+Create a new lesson with a basic 3-step template.
+
+```bash
+bundle exec jekyll scaffold-lesson LESSON_DIR "Lesson Title" "Lesson Description"
+```
+
+### `create-sample-lesson`
+
+Create a new lesson with filler content for testing.
+
+```bash
+bundle exec jekyll create-sample-lesson LESSON_DIR "Lesson Title" "Lesson Description"
 ```
 
 ## Custom Liquid Tags
@@ -163,4 +238,3 @@ Bug reports and pull requests are welcome on GitHub.
 ## License
 
 The gem is available as open source under the terms of the [MIT License](LICENSE).
-

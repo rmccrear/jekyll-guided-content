@@ -1,0 +1,358 @@
+/* ========================================
+   1. Setup & Custom CSS Variables
+   ======================================== */
+:root {
+    /* Define your custom theme colors here */
+    --lesson-title-size: 2.5rem;
+    --lesson-desc-size: 1.125rem;
+    
+    /* Light Mode Defaults (matching your original colors) */
+    --sidebar-bg: #fafafa;         /* previously $grey-lightest */
+    --sidebar-border: #e0e0e0;     /* previously $grey-lighter-variant */
+    --utility-bar-bg: #ffffff;
+    --step-bg: #fafafa;
+    
+    /* Details/ShowMe Specifics */
+    --details-border: #d0d0d0;     /* previously $grey-light */
+    --details-bg: #ffffff;         /* previously $white */
+    --details-summary-bg: #f5f5f5; /* previously $grey-lightest-variant */
+    --details-summary-hover: #eeeeee; /* previously $grey-lighter */
+    --details-separator: #e0e0e0;  /* previously $grey-lighter-variant */
+
+    /* Dark Mode Support - Bulma 1.0 Native Integration */
+    @media (prefers-color-scheme: dark) {
+        --sidebar-bg: var(--bulma-scheme-main-bis); 
+        --sidebar-border: var(--bulma-border);
+        --utility-bar-bg: var(--bulma-scheme-main);
+        --step-bg: var(--bulma-scheme-main-ter);
+        
+        --details-border: var(--bulma-border);
+        --details-bg: var(--bulma-scheme-main);
+        --details-summary-bg: var(--bulma-background);
+        --details-summary-hover: var(--bulma-border);
+        --details-separator: var(--bulma-border);
+    }
+}
+
+/* Dark theme override using data-theme attribute (for manual toggle) */
+[data-theme="dark"] {
+    --sidebar-bg: var(--bulma-scheme-main-bis); 
+    --sidebar-border: var(--bulma-border);
+    --utility-bar-bg: var(--bulma-scheme-main);
+    --step-bg: var(--bulma-scheme-main-ter);
+    
+    --details-border: var(--bulma-border);
+    --details-bg: var(--bulma-scheme-main);
+    --details-summary-bg: var(--bulma-background);
+    --details-summary-hover: var(--bulma-border);
+    --details-separator: var(--bulma-border);
+}
+
+/* ========================================
+   2. Layout
+   ======================================== */
+/* Prevent horizontal scrolling */
+// html, body {
+//   max-width: 100vw;
+//   /* overflow-x: hidden;  <-- Removed to ensure sticky works reliably */
+// }
+
+.columns.is-gapless {
+  min-height: 100vh;
+  margin: 0;
+  // max-width: 100vw; // <-- removed since we only need min-width: 0; on the main.column
+}
+
+/* Desktop Sidebar Styling */
+#desktop-sidebar {
+  width: 250px;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+}
+
+#desktop-sidebar .section {
+  padding: var(--bulma-size-5) var(--bulma-size-4);
+}
+
+/* Main Content Area */
+main.column {
+  min-height: 100vh;
+  background-color: var(--bulma-scheme-main); /* Adapts to dark mode */
+  padding-top: 0;
+  
+  /* Fix for horizontal overflow in flex item */
+  min-width: 0; 
+  
+  /* Ensure words break to prevent overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Ensure containers don't cause horizontal overflow */
+/* Note: Don't add overflow here as it breaks sticky positioning of utility bar */
+main.column .section {
+  // max-width: 100%; <-- DELETE (Block elements do this automatically, Don't need for sticky positioning fix)
+  /* Ensure section allows sticky positioning context */
+  /* Don't add overflow or position that would break sticky */
+}
+
+main.column .container {
+  // max-width: 100%; <-- DELETE (Block elements do this automatically, Don't need for sticky positioning fix)
+  /* Container should not interfere with sticky positioning */
+}
+
+/* Prevent code blocks and pre elements from causing overflow */
+main.column pre,
+main.column code {
+  max-width: 100%;
+  overflow-x: auto;
+  word-wrap: normal;
+}
+
+/* Mobile Navbar Styling */
+.navbar.is-hidden-desktop {
+  /* Use Bulma semantic vars for borders and shadows */
+  box-shadow: var(--bulma-shadow);
+  border-bottom: 1px solid var(--bulma-border);
+  z-index: 30;
+}
+
+/* No top margin needed on mobile since navbar is not fixed */
+
+/* Mobile: Ensure full width layout when sidebar is hidden */
+// @media screen and (max-width: 1023px) {
+//   main.column {
+//     max-width: 100vw;  // <-- removed since we only need min-width: 0; on the main.column
+//   }
+// }
+
+/* Lesson Header */
+main .container > h1:first-child,
+main .section > h1:first-child {
+  font-size: var(--lesson-title-size);
+  font-weight: var(--bulma-weight-bold);
+  color: var(--bulma-text-strong);
+  margin-top: 0;
+  margin-bottom: var(--bulma-size-5);
+  padding-bottom: var(--bulma-size-4);
+  border-bottom: 2px solid var(--sidebar-border);
+  line-height: 1.2;
+}
+
+main .container > h1:first-child + p {
+  font-size: var(--lesson-desc-size);
+  color: var(--bulma-text);
+  margin-bottom: var(--bulma-size-6);
+  line-height: 1.6;
+}
+
+/* ========================================
+   3. Utility Bar
+   ======================================== */
+.utility-bar {
+  height: 2em;
+  position: sticky;
+  top: 0;
+  background-color: var(--utility-bar-bg);
+  border-bottom: 1px solid var(--sidebar-border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 20;
+  margin-bottom: var(--bulma-size-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--bulma-size-4);
+  /* Ensure sticky works by making sure parent containers allow it */
+  width: 100%;
+}
+
+/* Ensure utility bar is sticky on mobile */
+@media screen and (max-width: 1023px) {
+  .utility-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+}
+
+.utility-bar-toc {
+  display: flex !important;
+  flex-direction: row;
+  gap: 0.25em;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.utility-bar-toc-button {
+  // width: 2em !important; // !important is not needed for the sticky positioning fix
+  // height: 2em !important; // !important is not needed for the sticky positioning fix
+  // display: inline-flex !important; // !important is not needed for the sticky positioning fix
+  width: 2em; 
+  height: 2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bulma-border);
+//   border-right: none; /* Remove right border to prevent double borders */
+  background-color: var(--bulma-scheme-main);
+  color: var(--bulma-text);
+  font-size: var(--bulma-size-7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0;
+  padding: 0;
+  
+  &:hover {
+    background-color: var(--bulma-background);
+    border-color: var(--bulma-link);
+    color: var(--bulma-link);
+  }
+  
+  /* Add right border back to the last button */
+  &:last-child {
+    border-right: 1px solid var(--bulma-border);
+  }
+  
+  /* Active state */
+  &.active {
+    background-color: var(--bulma-link);
+    color: var(--bulma-link-invert);
+    border-color: var(--bulma-link);
+    
+    /* Ensure right border is also link color when active */
+    &:last-child {
+      border-right-color: var(--bulma-link);
+    }
+  }
+}
+
+/* ========================================
+   4. Steps (The Box Component)
+   ======================================== */
+.step.box {
+  margin: var(--bulma-size-6) 0;
+  /* Bulma 1.0 boxes have specific shadow vars, we can override borders here */
+  border: 2px solid var(--sidebar-border);
+  background-color: var(--step-bg);
+  box-shadow: none; /* Flattening it as per your design */
+  display: block !important;
+  color: var(--bulma-text); /* Ensures text isn't black in dark mode */
+  transition: opacity 0.2s ease, display 0.2s ease;
+}
+
+/* Focus mode: hide steps that are not focused */
+.focus-mode .step.box {
+  display: none !important;
+}
+
+.focus-mode .step.box.focused {
+  display: block !important;
+}
+
+/* Step Header */
+.step-header.level {
+  font-size: 1.25rem; /* Increased from size-7 (0.75rem) to be more readable */
+  font-weight: var(--bulma-weight-semibold);
+  color: var(--bulma-text); /* Increased contrast from text-light */
+  margin-bottom: var(--bulma-size-4);
+  padding-bottom: var(--bulma-size-2);
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+/* Ensure anchor links scroll to the correct position, accounting for the sticky utility bar */
+.step-header.level[id] {
+  scroll-margin-top: 3.5em; /* 2em utility bar + ~1.5em breathing room */
+}
+
+.step-header.level[id]:hover {
+  color: var(--bulma-link);
+}
+
+/* ========================================
+   5. Typography & Content
+   ======================================== */
+/* Bulma 1.0 Content block is smarter. 
+   We just need to ensure your custom sizes apply.
+*/
+
+.step.box .content h1 { font-size: var(--bulma-size-6); }
+.step.box .content h2 { font-size: 1.75rem; }
+.step.box .content h3 { font-size: var(--bulma-size-5); }
+.step.box .content h4 { font-size: 1.25rem; }
+
+/* Code Blocks */
+.step.box .content pre {
+  background-color: var(--bulma-pre-background-color);
+  color: var(--bulma-pre-color);
+}
+
+/* ========================================
+   6. Details / ShowMe
+   ======================================== */
+details {
+  margin: var(--bulma-size-5) 0;
+  border: 1px solid var(--details-border);
+  border-radius: var(--bulma-radius);
+  background-color: var(--details-bg);
+}
+
+details summary {
+  padding: var(--bulma-size-4) var(--bulma-size-5);
+  font-weight: var(--bulma-weight-semibold);
+  cursor: pointer;
+  background-color: var(--details-summary-bg);
+  color: var(--bulma-text-strong);
+}
+
+details summary:hover {
+  background-color: var(--details-summary-hover);
+}
+
+details[open] summary {
+  border-bottom: 1px solid var(--details-separator);
+}
+
+/* ========================================
+   7. Menu / TOC
+   ======================================== */
+.menu-label {
+  font-size: 0.75rem;
+  color: var(--bulma-text);
+  font-weight: var(--bulma-weight-semibold);
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.menu-list a {
+  color: var(--bulma-text);
+  border-radius: var(--bulma-radius-small);
+}
+
+.menu-list a:hover {
+  background-color: var(--sidebar-border);
+  color: var(--bulma-link);
+}
+
+.menu-list a.is-active {
+  background-color: var(--bulma-link);
+  color: var(--bulma-link-invert); /* Automatically white */
+}
+
+/* Course button styling - adapts to dark mode */
+[data-theme="dark"] .button.is-light {
+  background-color: var(--bulma-scheme-main-ter);
+  color: var(--bulma-text);
+  border-color: var(--bulma-border);
+}
+
+[data-theme="dark"] .button.is-light:hover {
+  background-color: var(--bulma-scheme-main-bis);
+  border-color: var(--bulma-link);
+  color: var(--bulma-link);
+}

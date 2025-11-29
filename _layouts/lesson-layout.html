@@ -5,20 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title | default: site.title }}</title>
   <!-- Bulma CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
   <!-- Tocbot CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot/dist/tocbot.css">
   <!-- Custom CSS (loads after Bulma for overrides) -->
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
-  <!-- Highlight.js for syntax highlighting -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <!-- Highlight.js for syntax highlighting - Light theme (default) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="highlight-light-theme">
+  <!-- Highlight.js Dark theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="highlight-dark-theme" media="none">
 </head>
 <body>
   <!-- Mobile: Hamburger navbar -->
-  <nav class="navbar is-hidden-desktop is-fixed-top" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-hidden-desktop" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="{{ '/' | relative_url }}">
         {{ page.title | default: site.title | default: 'Documentation' }}
+      </a>
+      <!-- Theme Toggle Button (Mobile) -->
+      <a role="button" class="navbar-item is-hidden-desktop theme-toggle" aria-label="toggle theme">
+        <span class="icon">
+          <span class="theme-icon-light">🌞</span>
+          <span class="theme-icon-dark" style="display: none;">🌙</span>
+        </span>
       </a>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="toc-menu">
         <span aria-hidden="true"></span>
@@ -29,6 +38,9 @@
     <div id="toc-menu" class="navbar-menu">
       <div class="navbar-start">
         <div class="navbar-item">
+          <a href="{{ '/' | relative_url }}" class="button is-light is-small is-fullwidth" style="margin-bottom: 1rem;">
+            ← {% assign index_page = site.pages | where: "path", "index.md" | first %}{{ index_page.title | default: site.title | default: 'Course' }}
+          </a>
           <aside class="menu" id="mobile-toc">
             <p class="menu-label">Table of Contents</p>
             <ul class="menu-list" id="mobile-toc-list">
@@ -42,11 +54,21 @@
 
   <div class="columns is-gapless" style="margin-top: 0;">
     <!-- Desktop: Sidebar column -->
-    <aside class="column is-narrow is-hidden-mobile" id="desktop-sidebar">
+    <aside class="column is-narrow is-hidden-touch" id="desktop-sidebar">
       <div class="section" style="padding: 1.5rem;">
         <a href="{{ '/' | relative_url }}" class="button is-light is-small is-fullwidth" style="margin-bottom: 1rem;">
           ← {% assign index_page = site.pages | where: "path", "index.md" | first %}{{ index_page.title | default: site.title | default: 'Course' }}
         </a>
+        
+        <!-- Theme Toggle Button (Desktop Sidebar) -->
+        <button class="button is-light is-small is-fullwidth theme-toggle" style="margin-bottom: 1rem;">
+          <span class="icon">
+            <span class="theme-icon-light">🌞</span>
+            <span class="theme-icon-dark" style="display: none;">🌙</span>
+          </span>
+          <span>Toggle Theme</span>
+        </button>
+
         <aside class="menu">
           <p class="menu-label">Table of Contents</p>
           <ul class="menu-list" id="desktop-toc-list">
@@ -163,6 +185,22 @@
         return params.get('focus') === 'true';
       }
       
+      // Get step ID from URL hash
+      function getStepIdFromHash() {
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#')) {
+          return hash.substring(1);
+        }
+        return null;
+      }
+      
+      // Check if a step ID exists in the page
+      function isValidStepId(stepId) {
+        if (!stepId) return false;
+        const stepHeader = document.querySelector('.step-header.level[id="' + stepId + '"]');
+        return stepHeader !== null;
+      }
+      
       // Update URL with focus state
       function updateFocusStateInURL(focusEnabled) {
         const url = new URL(window.location);
@@ -226,17 +264,45 @@
           tocButtons.push({ button: button, stepId: stepId, stepBox: stepBox });
         });
         
-        // Set default focused step to first one
-        if (stepHeaders.length > 0) {
-          const firstStepId = stepHeaders[0].getAttribute('id');
-          if (firstStepId) {
-            focusedStepId = firstStepId;
+        // Check for hash in URL
+        const hashStepId = getStepIdFromHash();
+        
+        if (hashStepId && isValidStepId(hashStepId)) {
+          // If hash points to a valid step, highlight it in TOC regardless of focus mode
+          highlightStepInTOC(hashStepId);
+          
+          // If focus mode is enabled, also focus on that step
+          if (focusMode) {
+            focusedStepId = hashStepId;
+          }
+        } else {
+          // Set default focused step to first one if no valid hash
+          if (stepHeaders.length > 0) {
+            const firstStepId = stepHeaders[0].getAttribute('id');
+            if (firstStepId) {
+              focusedStepId = firstStepId;
+            }
           }
         }
         
         // Add click handler for focus button
         focusButton.addEventListener('click', function() {
           toggleFocusMode();
+        });
+        
+        // Handle hash changes (e.g., when clicking links with anchors)
+        window.addEventListener('hashchange', function() {
+          const newHashStepId = getStepIdFromHash();
+          if (newHashStepId && isValidStepId(newHashStepId)) {
+            // Always highlight the step in TOC regardless of focus mode
+            highlightStepInTOC(newHashStepId);
+            
+            // If focus mode is enabled, also focus on that step
+            if (focusMode) {
+              setFocusedStep(newHashStepId);
+              scrollToStep(newHashStepId);
+            }
+          }
         });
         
         // Apply initial focus state from URL
@@ -246,7 +312,17 @@
         
         // Sync sidebar TOC after Tocbot finishes (with delay)
         setTimeout(function() {
-          if (focusMode && focusedStepId) {
+          // Check for hash and highlight it in TOC (works regardless of focus mode)
+          const currentHashStepId = getStepIdFromHash();
+          if (currentHashStepId && isValidStepId(currentHashStepId)) {
+            highlightStepInTOC(currentHashStepId);
+            
+            // If focus mode is enabled and hash matches focused step, scroll to it
+            if (focusMode && focusedStepId && currentHashStepId === focusedStepId) {
+              scrollToStep(currentHashStepId);
+            }
+          } else if (focusMode && focusedStepId) {
+            // If no hash but focus mode is enabled, update TOC to match focused step
             updateSidebarTOCActiveState();
           }
           
@@ -255,12 +331,20 @@
           const mobileToc = document.getElementById('mobile-toc-list');
           
           function handleTocLinkClick(e) {
-            if (e.target.tagName === 'A' && focusMode) {
+            if (e.target.tagName === 'A') {
               const href = e.target.getAttribute('href');
               if (href && href.startsWith('#')) {
                 const stepId = href.substring(1);
-                setFocusedStep(stepId);
-                scrollToStep(stepId);
+                if (isValidStepId(stepId)) {
+                  // Always highlight the step in TOC regardless of focus mode
+                  highlightStepInTOC(stepId);
+                  
+                  // Only focus on step if focus mode is already enabled
+                  if (focusMode) {
+                    setFocusedStep(stepId);
+                    scrollToStep(stepId);
+                  }
+                }
               }
             }
           }
@@ -342,8 +426,9 @@
         updateSidebarTOCActiveState();
       }
       
-      // Update sidebar TOC active state to match focused step
-      function updateSidebarTOCActiveState() {
+      // Update sidebar TOC active state to match a step ID (can be used with or without focus mode)
+      function updateSidebarTOCActiveState(stepIdToHighlight) {
+        const stepId = stepIdToHighlight || focusedStepId;
         const desktopTocLinks = document.querySelectorAll('#desktop-toc-list a');
         const mobileTocLinks = document.querySelectorAll('#mobile-toc-list a');
         
@@ -352,9 +437,9 @@
           link.classList.remove('is-active');
         });
         
-        // Add active state to focused step's TOC link
-        if (focusedStepId) {
-          const targetHref = '#' + focusedStepId;
+        // Add active state to the specified step's TOC link
+        if (stepId) {
+          const targetHref = '#' + stepId;
           
           [...desktopTocLinks, ...mobileTocLinks].forEach(function(link) {
             if (link.getAttribute('href') === targetHref) {
@@ -362,6 +447,23 @@
             }
           });
         }
+      }
+      
+      // Highlight a step in both sidebar and utility bar TOC (works regardless of focus mode)
+      function highlightStepInTOC(stepId) {
+        if (!stepId || !isValidStepId(stepId)) return;
+        
+        // Highlight utility bar TOC button
+        tocButtons.forEach(function(item) {
+          if (item.stepId === stepId) {
+            item.button.classList.add('active');
+          } else {
+            item.button.classList.remove('active');
+          }
+        });
+        
+        // Highlight sidebar TOC link
+        updateSidebarTOCActiveState(stepId);
       }
       
       // Scroll to a step
@@ -472,6 +574,59 @@
       }
     })();
   </script>
+
+  <!-- Theme Toggle Script -->
+  <script>
+    (function() {
+      const themeToggles = document.querySelectorAll('.theme-toggle');
+      const html = document.documentElement;
+      const lightIcons = document.querySelectorAll('.theme-icon-light');
+      const darkIcons = document.querySelectorAll('.theme-icon-dark');
+
+      // Function to set theme
+      function setTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        // Update icons
+        if (theme === 'dark') {
+          lightIcons.forEach(icon => icon.style.display = 'none');
+          darkIcons.forEach(icon => icon.style.display = 'inline');
+        } else {
+          lightIcons.forEach(icon => icon.style.display = 'inline');
+          darkIcons.forEach(icon => icon.style.display = 'none');
+        }
+        
+        // Switch highlight.js theme
+        const lightTheme = document.getElementById('highlight-light-theme');
+        const darkTheme = document.getElementById('highlight-dark-theme');
+        if (lightTheme && darkTheme) {
+          if (theme === 'dark') {
+            lightTheme.setAttribute('media', 'none');
+            darkTheme.setAttribute('media', 'all');
+          } else {
+            lightTheme.setAttribute('media', 'all');
+            darkTheme.setAttribute('media', 'none');
+          }
+        }
+      }
+
+      // Check for saved preference or system preference
+      const savedTheme = localStorage.getItem('theme');
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      
+      // Initial set
+      setTheme(savedTheme || systemTheme);
+
+      // Add click handlers
+      themeToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const currentTheme = html.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          setTheme(newTheme);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
-

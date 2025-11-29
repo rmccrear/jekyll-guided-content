@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
 
   # CRITICAL: Ensure 'files' includes everything in lib
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    Dir["{lib,_layouts,_includes,assets}/**/*", "jekyll-guided-content.gemspec", "README.md", "LICENSE", "CHANGELOG.md"]
+    Dir["{lib,_layouts,_includes,assets}/**/*", "jekyll-guided-content.gemspec", "README.md", "QUICKSTART.md", "LESSON_PROMPT.md", "LICENSE", "CHANGELOG.md"]
   end
   
   spec.require_paths = ["lib"]
